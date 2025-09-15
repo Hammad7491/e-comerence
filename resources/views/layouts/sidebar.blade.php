@@ -76,6 +76,30 @@
 
 
 
+            <li class="sidebar-menu-group-title">Catalog</li>
+
+<li class="dropdown">
+    <a href="javascript:void(0)">
+        <iconify-icon icon="solar:bag-3-outline" class="menu-icon"></iconify-icon>
+        <span>Products</span>
+    </a>
+    <ul class="sidebar-submenu">
+        <li>
+            <a href="{{ route('admin.products.create') }}">
+                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Add Product
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('admin.products.index') }}">
+                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Product List
+            </a>
+        </li>
+    </ul>
+</li>
+
+
+
+
         </ul>
     </div>
 </aside>

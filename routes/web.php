@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\SiteController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Chatbot\ChatbotController;
 use App\Http\Controllers\Admin\PermissionController;
@@ -66,4 +67,28 @@ Route::middleware('auth')->group(function () {
 
                     ->middleware('can:view permissions');
           });
+});
+
+
+
+
+Route::prefix('admin')->name('admin.')->middleware(['auth']) // remove 'auth' if you don't need it yet
+    ->group(function () {
+        Route::resource('products', ProductController::class);
+    });
+
+
+
+
+    Route::view('/debug-upload-form', 'debug-upload-form');
+Route::post('/debug-upload', function (\Illuminate\Http\Request $r) {
+    return response()->json([
+        'hasFile' => $r->hasFile('images'),
+        'ini' => [
+            'upload_max_filesize' => ini_get('upload_max_filesize'),
+            'post_max_size'       => ini_get('post_max_size'),
+            'max_file_uploads'    => ini_get('max_file_uploads'),
+            'memory_limit'        => ini_get('memory_limit'),
+        ],
+    ]);
 });

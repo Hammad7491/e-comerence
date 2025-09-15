@@ -1,100 +1,94 @@
 @extends('layouts.app')
 
-@push('styles')
-<style>
-  /* Header gradient */
-  .bg-gradient-primary {
-    background: linear-gradient(45deg, #0d6efd, #6610f2) !important;
-  }
-
-  /* “Light primary” button */
-  .btn-light-primary {
-    color: #0d6efd;
-    background-color: #f0f5ff;
-    border: 1px solid #0d6efd;
-  }
-  .btn-light-primary:hover {
-    background-color: #e2ecff;
-  }
-
-  /* Striped rows */
-  .table-striped > tbody > tr:nth-of-type(odd) {
-    background-color: rgba(102,16,242,0.05);
-  }
-
-  /* Stronger table header line */
-  .table thead th {
-    border-bottom-width: 2px;
-  }
-</style>
-@endpush
-
 @section('content')
-<div class="container my-5">
-  <div class="card shadow border-0 rounded-3">
-    <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
-      <h4 class="mb-0">
-        <i class="bi bi-shield-lock-fill me-2"></i>
-        Permissions List
-      </h4>
-      <a href="{{ route('admin.permissions.create') }}" class="btn btn-light-primary btn-sm d-flex align-items-center">
-        <i class="bi bi-key-fill me-1"></i>
-        New Permission
-      </a>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-3">
+        <h1 class="text-3xl font-bold text-slate-800">Products</h1>
+        <a href="{{ route('admin.products.create') }}"
+           class="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow">
+            + Add Product
+        </a>
     </div>
 
-    <div class="card-body p-4">
-      @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
-          <i class="bi bi-check-circle-fill me-2 fs-4"></i>
-          <div>{{ session('success') }}</div>
-          <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+    @if(session('success'))
+        <div class="mb-4 rounded-lg border border-green-200 bg-green-50 p-3 text-green-800">
+            {{ session('success') }}
         </div>
-      @endif
+    @endif
 
-      <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle mb-0">
-          <thead class="table-light">
-            <tr>
-              <th><i class="bi bi-tag-fill me-1"></i>Name</th>
-              <th class="text-end"><i class="bi bi-gear-fill me-1"></i>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach($permissions as $permission)
-              <tr>
-                <td class="fw-semibold">{{ $permission->name }}</td>
-                <td class="text-end">
-                  <a
-                    href="{{ route('admin.permissions.edit', $permission) }}"
-                    class="btn btn-sm btn-outline-primary me-1"
-                    title="Edit"
-                  >
-                    <i class="bi bi-pencil-fill"></i>
-                  </a>
-                  <form
-                    action="{{ route('admin.permissions.destroy', $permission) }}"
-                    method="POST"
-                    class="d-inline"
-                  >
-                    @csrf
-                    @method('DELETE')
-                    <button
-                      type="submit"
-                      class="btn btn-sm btn-outline-danger"
-                      onclick="return confirm('Delete this permission?')"
-                      title="Delete"
-                    >
-                      <i class="bi bi-trash-fill"></i>
-                    </button>
-                  </form>
-                </td>
-              </tr>
-            @endforeach
-          </tbody>
+    <div class="overflow-hidden bg-white rounded-2xl ring-1 ring-slate-100 shadow-lg">
+        <table class="min-w-full divide-y divide-slate-100">
+            <thead class="bg-slate-50">
+                <tr>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-slate-600">Image</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-slate-600">Name</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-slate-600">Price</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-slate-600">Stock</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-slate-600">Status</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-slate-600">Created</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-slate-600">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                @forelse($products as $product)
+                <tr>
+                    <td class="px-4 py-3">
+                        @php $img = $product->firstImageUrl(); @endphp
+                        @if($img)
+                            <img src="{{ $img }}" class="w-14 h-14 object-cover rounded-md ring-1 ring-slate-200 shadow-sm" alt="">
+                        @else
+                            <div class="w-14 h-14 rounded-md bg-slate-100 text-slate-400 flex items-center justify-center text-xs">N/A</div>
+                        @endif
+                    </td>
+                    <td class="px-4 py-3 font-medium text-slate-800">{{ $product->name }}</td>
+                    <td class="px-4 py-3">
+                        <span class="text-indigo-600 font-bold">
+                            ${{ number_format($product->final_price, 2) }}
+                        </span>
+                        @if(!is_null($product->original_price) && $product->original_price > $product->final_price)
+                            <span class="ml-2 line-through text-slate-400">
+                                ${{ number_format($product->original_price, 2) }}
+                            </span>
+                        @endif
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-sm
+                                     {{ $product->stock > 0 ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200' : 'bg-rose-50 text-rose-700 ring-1 ring-rose-200' }}">
+                            {{ $product->stock }}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3">
+                        @if($product->is_active)
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-sm bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200">Active</span>
+                        @else
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-sm bg-slate-100 text-slate-700 ring-1 ring-slate-200">Inactive</span>
+                        @endif
+                    </td>
+                    <td class="px-4 py-3 text-slate-500 text-sm">{{ $product->created_at->format('M d, Y') }}</td>
+                    <td class="px-4 py-3">
+                        <div class="flex items-center gap-2">
+                            <a href="{{ route('admin.products.edit', $product) }}"
+                               class="px-3 py-1.5 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-sm">Edit</a>
+                            <form method="POST" action="{{ route('admin.products.destroy', $product) }}"
+                                  onsubmit="return confirm('Delete this product?')">
+                                @csrf @method('DELETE')
+                                <button class="px-3 py-1.5 rounded-md bg-rose-600 hover:bg-rose-700 text-white text-sm">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="7" class="px-4 py-8 text-center text-slate-500">No products found.</td>
+                </tr>
+                @endforelse
+            </tbody>
         </table>
-      </div>
     </div>
-  </div>
+
+    <div class="mt-6">
+        {{ $products->links() }}
+    </div>
 </div>
 @endsection
