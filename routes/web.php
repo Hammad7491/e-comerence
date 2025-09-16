@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SiteController;
 use App\Http\Controllers\Admin\UserController;
@@ -91,4 +92,11 @@ Route::post('/debug-upload', function (\Illuminate\Http\Request $r) {
             'memory_limit'        => ini_get('memory_limit'),
         ],
     ]);
+});
+
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile',  [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile',  [ProfileController::class, 'update'])->name('profile.update');
 });

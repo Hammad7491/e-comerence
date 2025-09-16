@@ -99,6 +99,16 @@
 
 
 
+<li>
+  <a href="{{ route('profile.edit') }}">
+    <iconify-icon icon="solar:user-circle-outline" class="menu-icon"></iconify-icon>
+    <span>My Profile</span>
+  </a>
+</li>
+
+
+
+
 
         </ul>
     </div>
