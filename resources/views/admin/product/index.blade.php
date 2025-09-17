@@ -60,6 +60,8 @@ tr:hover{background:#fafafa}
           <th>Images</th>
           <th>Name</th>
           <th>Price</th>
+          <th>Pieces</th>
+          <th>Collection</th>
           <th>Stock</th>
           <th>Status</th>
           <th>Created</th>
@@ -92,6 +94,8 @@ tr:hover{background:#fafafa}
               <span class="price-old" style="margin-left:6px">${{ number_format($product->original_price, 2) }}</span>
             @endif
           </td>
+          <td style="font-weight:600;color:#334155">{{ ucfirst($product->pieces) }}</td>
+          <td style="font-weight:600;color:#334155">{{ ucfirst($product->collection) }}</td>
           <td>
             <span class="badge {{ $product->stock > 0 ? 'stock' : 'out' }}">{{ $product->stock > 0 ? $product->stock : '0' }}</span>
           </td>
@@ -111,7 +115,7 @@ tr:hover{background:#fafafa}
           </td>
         </tr>
       @empty
-        <tr><td colspan="7" style="text-align:center;color:#64748b;padding:24px">No products found.</td></tr>
+        <tr><td colspan="9" style="text-align:center;color:#64748b;padding:24px">No products found.</td></tr>
       @endforelse
       </tbody>
     </table>

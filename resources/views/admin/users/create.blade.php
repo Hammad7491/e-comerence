@@ -106,22 +106,21 @@
         </div>
 
         <div class="mt-4">
-          <label for="roles" class="form-label">
-            <i class="fas fa-user-shield me-1"></i>Roles
+          <label for="role" class="form-label">
+            <i class="fas fa-user-shield me-1"></i>Role
           </label>
           <select
-            id="roles"
-            name="roles[]"
+            id="role"
+            name="role"
             class="form-select"
-            
             required
           >
-            @foreach($roles as $role)
+            @foreach(['admin','manager','user'] as $role)
               <option
-                value="{{ $role->name }}"
-                {{ in_array($role->name, $userRoles ?? []) ? 'selected' : '' }}
+                value="{{ $role }}"
+                {{ old('role', $user->role ?? '') === $role ? 'selected' : '' }}
               >
-                {{ ucfirst($role->name) }}
+                {{ ucfirst($role) }}
               </option>
             @endforeach
           </select>

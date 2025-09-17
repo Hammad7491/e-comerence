@@ -21,11 +21,12 @@ class ProductRequest extends FormRequest
             'stock'          => ['required','integer','min:0'],
             'is_active'      => ['nullable','boolean'],
 
-            // allow up to 3 images; each must be an image file up to 4MB
+            'pieces'         => ['required','in:2-piece,3-piece'],
+            'collection'     => ['required','in:summer,winter,spring'],
+
             'images'         => ['nullable','array','max:3'],
             'images.*'       => ['nullable','image','mimes:jpg,jpeg,png,webp','max:4096'],
 
-            // allow removal checkboxes
             'remove_images'  => ['nullable','array'],
             'remove_images.*'=> ['string'],
         ];
@@ -33,7 +34,6 @@ class ProductRequest extends FormRequest
 
     public function prepareForValidation(): void
     {
-        // make sure unchecked switch is treated as false
         $this->merge([
             'is_active' => (bool) $this->boolean('is_active'),
         ]);

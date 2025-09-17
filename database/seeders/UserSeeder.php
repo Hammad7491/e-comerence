@@ -1,5 +1,4 @@
 <?php
-// database/seeders/UserSeeder.php
 
 namespace Database\Seeders;
 
@@ -9,46 +8,31 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    public function run()
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
     {
-        // — Admin User —
-        $admin = User::updateOrCreate(
-            ['name' => 'Admin User'],
+        // Admin user
+        User::updateOrCreate(
+            ['email' => 'a@a'],
             [
-                'email'    => 'a@a',
-                'password' => Hash::make('a'),
+                'name'     => 'Admin User',
+                'password' => Hash::make('a'), // change in production
+                'role'     => 'admin',
             ]
         );
-        $admin->syncRoles('Admin');
 
-        // — Site Manager User —
-        $manager = User::updateOrCreate(
-            ['name' => 'Site Manager User'],
-            [
-                'email'    => 'manager@example.com',
-                'password' => Hash::make('password'),
-            ]
-        );
-        $manager->syncRoles('Site Manager');
-
-        // — Collaborator User —
-        $collaborator = User::updateOrCreate(
-            ['name' => 'Collaborator User'],
-            [
-                'email'    => 'collaborator@example.com',
-                'password' => Hash::make('password'),
-            ]
-        );
-        $collaborator->syncRoles('Collaborator');
-
-        // — Client User —
-        $client = User::updateOrCreate(
-            ['name' => 'Client User'],
-            [
-                'email'    => 'client@example.com',
-                'password' => Hash::make('password'),
-            ]
-        );
-        $client->syncRoles('Client');
+        // Normal users
+        for ($i = 1; $i <= 3; $i++) {
+            User::updateOrCreate(
+                ['email' => "user{$i}@example.com"],
+                [
+                    'name'     => "User {$i}",
+                    'password' => Hash::make('password'),
+                    'role'     => 'user',
+                ]
+            );
+        }
     }
 }

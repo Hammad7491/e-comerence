@@ -1,102 +1,82 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
+
+// Admin area controllers
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\SiteController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\SocialController;
-use App\Http\Controllers\Admin\ClientController;
+
+// Social auth (keep if you use them)
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Chatbot\ChatbotController;
-use App\Http\Controllers\Admin\PermissionController;
-use App\Http\Controllers\Chatbot\UserNameController;
-use App\Http\Controllers\Admin\PurchaseOrderController;
 
-// Public
-Route::view('/', 'welcome');
+/*
+|--------------------------------------------------------------------------
+| Public (guest) routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/login',      [AuthController::class, 'loginform'])->name('loginform');
-Route::post('/login',     [AuthController::class, 'login'])->name('login');
-Route::get('/register',   [AuthController::class, 'registerform'])->name('registerform');
-Route::post('/register',  [AuthController::class, 'register'])->name('register');
-Route::post('/logout',    [AuthController::class, 'logout'])->name('logout');
-Route::view('/error',     'auth.errors.error403')->name('auth.error403');
+// (Frontend product page; stub controller if you don’t have one yet)
+Route::get('/products/{product}', [ProductController::class, 'show'])
+     ->name('products.show');
 
-// Social
-Route::get('login/google',   [SocialController::class, 'redirectToGoogle'])->name('google.login');
-Route::get('login/google/callback', [SocialController::class, 'handleGoogleCallback']);
-Route::get('login/facebook', [SocialController::class, 'redirectToFacebook'])->name('facebook.login');
-Route::get('login/facebook/callback', [SocialController::class, 'handleFacebookCallback']);
+Route::get('/login',     [AuthController::class, 'loginform'])->name('loginform');
+Route::post('/login',    [AuthController::class, 'login'])->name('login');
 
-// Authenticated
+Route::get('/register',  [AuthController::class, 'registerform'])->name('registerform');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+
+Route::view('/error', 'auth.errors.error403')->name('auth.error403');
+
+/*
+|--------------------------------------------------------------------------
+| Social Auth (optional)
+|--------------------------------------------------------------------------
+*/
+Route::get('login/google',            [SocialController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('login/google/callback',  [SocialController::class, 'handleGoogleCallback']);
+Route::get('login/facebook',         [SocialController::class, 'redirectToFacebook'])->name('facebook.login');
+Route::get('login/facebook/callback',[SocialController::class, 'handleFacebookCallback']);
+
+/*
+|--------------------------------------------------------------------------
+| Authenticated (any logged-in user)
+|--------------------------------------------------------------------------
+*/
 Route::middleware('auth')->group(function () {
 
+    // Logout
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    // User dashboard (non-admin)
+    // Create a simple view/controller for this if you don't have one
+    Route::get('/dashboard', function () {
+        return view('user.dashboard'); // resources/views/user/dashboard.blade.php
+    })->name('user.dashboard');
 
-     // Admin area
-     Route::prefix('admin')
-          ->name('admin.')
-          ->group(function () {
-
-
-
-
-               Route::resource('clients', ClientController::class)
-                    ->middleware('can:view clients');
-
-               // Dashboard (single index action)
-               Route::resource('dashboard', DashboardController::class)
-                    ->only('index')
-                    ->names(['index' => 'dashboard'])
-                    ->middleware('can:view dashboard');
-
-        
-               Route::resource('users', UserController::class)
-
-                    ->middleware('can:view users');
-
-               // Roles CRUD
-               Route::resource('roles', RoleController::class)
-
-                    ->middleware('can:view roles');
-
-               // Permissions CRUD
-               Route::resource('permissions', PermissionController::class)
-
-                    ->middleware('can:view permissions');
-          });
-});
-
-
-
-
-Route::prefix('admin')->name('admin.')->middleware(['auth']) // remove 'auth' if you don't need it yet
-    ->group(function () {
-        Route::resource('products', ProductController::class);
-    });
-
-
-
-
-    Route::view('/debug-upload-form', 'debug-upload-form');
-Route::post('/debug-upload', function (\Illuminate\Http\Request $r) {
-    return response()->json([
-        'hasFile' => $r->hasFile('images'),
-        'ini' => [
-            'upload_max_filesize' => ini_get('upload_max_filesize'),
-            'post_max_size'       => ini_get('post_max_size'),
-            'max_file_uploads'    => ini_get('max_file_uploads'),
-            'memory_limit'        => ini_get('memory_limit'),
-        ],
-    ]);
-});
-
-
-
-Route::middleware('auth')->group(function () {
+    // Profile (edit own name/email/password)
     Route::get('/profile',  [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile',  [ProfileController::class, 'update'])->name('profile.update');
 });
+
+
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth', 'role:admin'])
+    ->group(function () {
+
+        // Admin dashboard (single index)
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Users management (CRUD)
+        Route::resource('users', UserController::class)->except(['show']);
+
+        // Products (CRUD)
+        Route::resource('products', ProductController::class);
+    });
+

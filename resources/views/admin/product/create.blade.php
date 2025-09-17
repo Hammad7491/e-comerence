@@ -104,6 +104,27 @@ body{background:var(--bg)}
       <!-- RIGHT -->
       <div>
         <div class="fx-row">
+
+          <!-- NEW: Pieces & Collection -->
+          <div class="fx-row fx-2">
+            <div>
+              <label class="fx-label">Pieces <span style="color:#ef4444">*</span></label>
+              <select class="fx-input" name="pieces" required>
+                <option value="2-piece" {{ old('pieces', $product->pieces ?? '') === '2-piece' ? 'selected' : '' }}>2 Piece</option>
+                <option value="3-piece" {{ old('pieces', $product->pieces ?? '') === '3-piece' ? 'selected' : '' }}>3 Piece</option>
+              </select>
+            </div>
+            <div>
+              <label class="fx-label">Collection <span style="color:#ef4444">*</span></label>
+              <select class="fx-input" name="collection" required>
+                <option value="summer" {{ old('collection', $product->collection ?? '') === 'summer' ? 'selected' : '' }}>Summer</option>
+                <option value="winter" {{ old('collection', $product->collection ?? '') === 'winter' ? 'selected' : '' }}>Winter</option>
+                <option value="spring" {{ old('collection', $product->collection ?? '') === 'spring' ? 'selected' : '' }}>Spring</option>
+              </select>
+            </div>
+          </div>
+          <!-- /NEW -->
+
           <div>
             <label class="fx-label">Stock</label>
             <input class="fx-input" type="number" name="stock" min="0" required value="{{ old('stock', $product->stock ?? 0) }}">
@@ -199,31 +220,24 @@ body{background:var(--bg)}
       reader.onload = e => img.src = e.target.result;
       reader.readAsDataURL(file);
 
-      // NOTE: no "remove" button here, because we are not mutating input.files.
-      // To change selected files, the user should reopen the picker.
-
       preview.appendChild(card);
     }
 
     updateCounter(take);
   }
 
-  // keep counter in sync when toggling existing removals
   existingBoxes().forEach(cb => cb.addEventListener('change', () => {
-    // recompute from current input selection
     const files = input.files || [];
     const remaining = Math.max(0, MAX - keptExisting());
     const selectedNew = Math.min(remaining, files.length);
     updateCounter(selectedNew);
   }));
 
-  // preview when user selects files
   input.addEventListener('change', e => {
     const files = Array.from(e.target.files || []);
     renderPreviews(files);
   });
 
-  // initial counter
   updateCounter(0);
 })();
 </script>

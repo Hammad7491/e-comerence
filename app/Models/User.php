@@ -1,19 +1,17 @@
 <?php
 
-    namespace App\Models;
+namespace App\Models;
 
-    use Illuminate\Foundation\Auth\User as Authenticatable;
-    use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-    class User extends Authenticatable
+class User extends Authenticatable
+{
+    protected $fillable = ['name','email','password','role'];
+    protected $hidden   = ['password','remember_token'];
+
+    // optional helper
+    public function isRole(string $role): bool
     {
-        use HasRoles;
-
-        protected $fillable = [
-            'name', 'email', 'password',
-        ];
-
-        protected $hidden = [
-            'password', 'remember_token',
-        ];
+        return strtolower((string) $this->role) === strtolower($role);
     }
+}

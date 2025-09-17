@@ -63,7 +63,7 @@
             <tr>
               <th><i class="bi bi-person-fill me-1"></i>Name</th>
               <th><i class="bi bi-envelope-fill me-1"></i>Email</th>
-              <th><i class="bi bi-shield-lock-fill me-1"></i>Roles</th>
+              <th><i class="bi bi-shield-lock-fill me-1"></i>Role</th>
               <th class="text-center"><i class="bi bi-gear-fill me-1"></i>Actions</th>
             </tr>
           </thead>
@@ -73,11 +73,9 @@
                 <td class="fw-semibold">{{ $user->name }}</td>
                 <td>{{ $user->email }}</td>
                 <td>
-                  @foreach($user->roles as $role)
-                    <span class="badge badge-role text-white me-1 rounded-pill">
-                      {{ ucfirst($role->name) }}
-                    </span>
-                  @endforeach
+                  <span class="badge badge-role text-white rounded-pill">
+                    {{ ucfirst($user->role) }}
+                  </span>
                 </td>
                 <td class="text-center">
                   <a

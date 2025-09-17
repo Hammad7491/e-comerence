@@ -4,30 +4,24 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware
 {
     /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  mixed ...$roles
-     * @return mixed
+     * Use as: ->middleware('role:admin') or ->middleware('role:admin,manager')
      */
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        // If the user isn't authenticated, redirect to the login route.
-        if (! Auth::check()) {
-            return redirect()->route('login');
+        $user = $request->user();
+        if (!$user) {
+            abort(401);
         }
 
-        $user = Auth::user();
-        
-        // If the user's role isn't one of the allowed roles, redirect to the auth.errors.role route.
-        if (! in_array($user->role, $roles)) {
-            return redirect()->route('auth.errors.error403');
+        $userRole = strtolower((string) $user->role);
+        $roles    = array_map('strtolower', $roles);
+
+        if (! in_array($userRole, $roles, true)) {
+            abort(403);
         }
 
         return $next($request);

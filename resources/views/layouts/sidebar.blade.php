@@ -48,16 +48,8 @@
                             <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Users List
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ route('admin.roles.index') }}">
-                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Roles & Permissions
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.permissions.index') }}">
-                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Permissions
-                        </a>
-                    </li>
+               
+                   
                 </ul>
 
             </li>
