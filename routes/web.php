@@ -3,14 +3,15 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CartController;
 
 // Admin area controllers
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Auth\SocialController;
 
 // Social auth (keep if you use them)
+use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\ProductViewController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -82,3 +83,13 @@ Route::prefix('admin')
 
 Route::get('/product/{product}', [ProductViewController::class, 'show'])
      ->name('product.show');
+
+
+
+
+     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+
+// protect add-to-cart so guests are sent to login automatically
+Route::post('/cart', [CartController::class, 'store'])
+    ->middleware('auth')
+    ->name('cart.store');

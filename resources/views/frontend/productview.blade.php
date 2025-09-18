@@ -86,6 +86,7 @@
   $main        = $imgs[0] ?? $product->firstImageUrl();
   $name        = $product->name ?? '';
   $finalPrice  = isset($product->final_price) ? number_format($product->final_price, 0) : null;
+  $finalPriceRaw = (float) ($product->final_price ?? 0);
   $origPrice   = (!is_null($product->original_price) && $product->original_price > $product->final_price)
                   ? number_format($product->original_price, 0) : null;
   $piecesText  = $product->pieces ? ucwords(str_replace('-', ' ', $product->pieces)) : null;
@@ -164,14 +165,25 @@
           </div>
         </div>
 
-        <button class="pv-btn pv-btn--cart" {{ $inStock ? '' : 'disabled' }}>Add To Cart</button>
-        <button class="pv-btn pv-btn--wish">Add To Wishlist</button>
+        {{-- Add To Cart form (auth middleware will redirect guests to login) --}}
+        <form action="{{ route('cart.store') }}" method="POST" class="pv-atc-form" style="margin:0">
+          @csrf
+          <input type="hidden" name="product_id" value="{{ $product->id }}">
+          <input type="hidden" name="qty" id="form-qty" value="1">
+          <button type="submit" class="pv-btn pv-btn--cart" {{ $inStock ? '' : 'disabled' }}>Add To Cart</button>
+        </form>
+        <button class="pv-btn pv-btn--wish" type="button">Add To Wishlist</button>
+
+        {{-- Live total (qty × price) --}}
+        <div style="margin-top:6px;font:800 12px 'Inter';color:#2a2a2c">
+          Total: <span id="pv-total">PKR {{ number_format($finalPriceRaw, 0) }}</span>
+        </div>
 
         <div class="pv-sec">
           <h4>Details</h4>
           <div class="bar"></div>
           <div class="pv-spec">
-            {{-- ONLY description here (original price removed as requested) --}}
+            {{-- ONLY description here (no original/final price, no pieces/collection) --}}
             @if($desc)
               {!! nl2br(e($desc)) !!}
             @endif
@@ -199,9 +211,24 @@ document.querySelectorAll('.pv-thumb[data-src]').forEach(btn=>{
 const qty = document.getElementById('pv-qty');
 document.getElementById('pv-dec')?.addEventListener('click', ()=> {
   qty.value = Math.max(1, (parseInt(qty.value)||1) - 1);
+  updateTotals();
 });
 document.getElementById('pv-inc')?.addEventListener('click', ()=> {
   qty.value = (parseInt(qty.value)||1) + 1;
+  updateTotals();
 });
+
+// === Live Total Calculation & Form Sync ===
+const unitPrice = {{ $finalPriceRaw }};
+const formQty   = document.getElementById('form-qty');
+const totalLbl  = document.getElementById('pv-total');
+
+function updateTotals(){
+  const q = Math.max(1, parseInt(qty.value)||1);
+  if (formQty) formQty.value = q;
+  if (totalLbl) totalLbl.textContent = 'PKR ' + Math.round(unitPrice * q).toLocaleString();
+}
+// init
+updateTotals();
 </script>
 @endsection
