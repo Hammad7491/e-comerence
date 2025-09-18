@@ -259,6 +259,11 @@
             color: #6b7280;
             font: 600 11px/1 "Inter"
         }
+
+        /* make whole card clickable to product view */
+        .card a.card-link{
+            position:absolute; inset:0; z-index:10; text-indent:-9999px;
+        }
     </style>
 
 
@@ -480,6 +485,9 @@
         <div class="grid">
             @forelse($items as $p)
                 <article class="card" style="--d: {{ $loop->index * 70 }}ms">
+                    {{-- CLICKABLE OVERLAY LINK TO PRODUCT VIEW --}}
+                    <a href="{{ route('product.show', $p) }}" class="card-link" aria-label="{{ $p->name }}">View</a>
+
                     @php $img = $p->firstImageUrl(); @endphp
                     @if ($img)
 <div class="media" style="--bg-img: url('{{ $img }}')">
@@ -487,7 +495,7 @@
                             <img src="{{ $img }}" alt="{{ $p->name }}">
                         </div>
                     @else
-                        <div class="media">
+                        <div class="media" style="--bg-img: url('https://via.placeholder.com/400x300/000000/666?text=No+Image')">
 
                             <img src="https://via.placeholder.com/400x300/ffffff/aaaaaa?text=No+Image" alt="no image">
 
@@ -579,7 +587,7 @@
   // Mirror each <img> src into its parent as a CSS var used above
   document.querySelectorAll('.card .media').forEach(m => {
     const img = m.querySelector('img');
-    if (img && img.src) m.style.setProperty('--media-bg', `url("${img.src}")`);
+    if (img && img.src) m.style.setProperty('--bg-img', `url("${img.src}")`);
   });
 </script>
 

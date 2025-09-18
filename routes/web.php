@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\SocialController;
 
 // Social auth (keep if you use them)
+use App\Http\Controllers\ProductViewController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\DashboardController;
 
@@ -22,8 +23,7 @@ use App\Http\Controllers\Admin\DashboardController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // (Frontend product page; stub controller if you don’t have one yet)
-Route::get('/products/{product}', [ProductController::class, 'show'])
-     ->name('products.show');
+
 
 Route::get('/login',     [AuthController::class, 'loginform'])->name('loginform');
 Route::post('/login',    [AuthController::class, 'login'])->name('login');
@@ -80,3 +80,5 @@ Route::prefix('admin')
         Route::resource('products', ProductController::class);
     });
 
+Route::get('/product/{product}', [ProductViewController::class, 'show'])
+     ->name('product.show');
