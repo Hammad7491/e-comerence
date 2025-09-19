@@ -5,15 +5,39 @@
     <div class="container">
       <div class="topbar-left">Currency : PKR</div>
       <div class="topbar-right">
-        <a href="/register">Register</a>
-        <span class="sep">|</span>
-        <a href="/login">Sign In</a>
 
-        <div class="cart-pill" aria-label="Cart">
+        @guest
+          <a href="{{ route('registerform') }}">Register</a>
+          <span class="sep">|</span>
+          <a href="{{ route('loginform') }}">Sign In</a>
+        @else
+          <span>Welcome, {{ Auth::user()->name }}</span>
+          <span class="sep">|</span>
+          <a href="{{ route('logout') }}"
+             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            Log Out
+          </a>
+          <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
+            @csrf
+          </form>
+        @endguest
+
+        @php
+          // Per-user cart key (users see only their cart; guests have their own cart)
+          $cartKey   = auth()->check() ? 'cart_user_'.auth()->id() : 'cart_guest';
+          $cartItems = collect(session($cartKey.'.items', []));
+          $cartQty   = (int) $cartItems->sum('qty');
+        @endphp
+
+        <a href="{{ route('cart.index') }}" class="cart-pill" aria-label="Cart">
           <span class="cart-icon">🛒</span>
-          <span>empty</span>
+          @if($cartQty > 0)
+            <span>{{ $cartQty }} item{{ $cartQty > 1 ? 's' : '' }}</span>
+          @else
+            <span>empty</span>
+          @endif
           <span class="caret"></span>
-        </div>
+        </a>
       </div>
     </div>
   </div>
@@ -22,10 +46,10 @@
   <div class="main-header">
     <div class="container">
       <div class="brand">
-        <a class="logo" href="/">
+        <a class="logo" href="{{ route('home') }}">
           <img src="/assets/images/logo.png" alt="Guley Threads" />
         </a>
-        <a class="brand-text" href="/">
+        <a class="brand-text" href="{{ route('home') }}">
           <span>Guley</span>
           <span>Threads</span>
         </a>
@@ -79,7 +103,7 @@
   display:inline-flex; align-items:center; gap:6px;
   background:var(--brand-pill); color:#fff; padding:6px 10px;
   border-top-left-radius:4px; border-top-right-radius:4px;
-  position:relative; margin-left:8px;
+  position:relative; margin-left:8px; text-decoration:none;
 }
 .cart-pill .cart-icon{line-height:1; transform:translateY(-.5px);}
 .cart-pill .caret{

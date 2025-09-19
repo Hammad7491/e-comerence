@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -33,11 +32,10 @@ class AuthController extends Controller
     }
 
     /**
-     * Handle registration (manual or social data).
+     * Handle registration (manual).
      */
     public function register(Request $request)
     {
-        // Manual registration only (simplified, no Spatie)
         $validator = Validator::make($request->all(), [
             'name'     => 'required|string|max:255|unique:users,name',
             'email'    => 'required|email|unique:users,email',
@@ -48,23 +46,22 @@ class AuthController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        // create & assign default role = user
-        $user = User::create([
+        // default role: user
+        User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'role'     => 'user', // default role
+            'role'     => 'user',
         ]);
 
         return redirect()->route('loginform')->with('success', 'Registration successful');
     }
 
     /**
-     * Handle login and redirect based on roles (using `role` column).
+     * Handle login and redirect based on roles.
      */
     public function login(Request $request)
     {
-        // validate credentials
         $credentials = $request->validate([
             'email'    => 'required|email',
             'password' => 'required',
@@ -78,15 +75,12 @@ class AuthController extends Controller
 
         $user = Auth::user();
 
-        // redirection based on role
+        // Admin -> admin dashboard
         if ($user->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
 
-        // you can add more granular redirects here:
-        // if ($user->role === 'manager') { ... }
-
-        // default logged-in landing
-        return redirect()->route('user.dashboard');
+        // Everyone else (user, etc.) -> home page
+        return redirect()->route('home');
     }
 }
