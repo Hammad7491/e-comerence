@@ -2,7 +2,7 @@
 
 @section('content')
 <style>
-:root{--ink:#0f172a;--muted:#64748b;--ring:rgba(79,70,229,.18);--indigo:#4f46e5;--rose:#e11d48;--green:#16a34a;--blue:#2563eb}
+:root{--ink:#0f172a;--muted:#64748b;--ring:rgba(79,70,229,.18);--indigo:#4f46e5;--blue:#2563eb}
 .page{max-width:1120px;margin:0 auto;padding:28px 16px}
 .h1{font:800 44px/1.05 ui-sans-serif,system-ui,"Segoe UI",Roboto,Ubuntu,"Helvetica Neue",Arial;color:var(--ink);letter-spacing:-.02em}
 .toolbar{display:flex;gap:10px;flex-wrap:wrap}
@@ -13,12 +13,15 @@
 .table-wrap{overflow:hidden;background:#fff;border:1px solid #eef2f7;border-radius:1rem;box-shadow:0 8px 20px rgba(2,6,23,.06)}
 table{width:100%;border-collapse:collapse}
 thead th{background:#f8fafc;font:600 13px/1 ui-sans-serif;color:#475569;text-align:left;padding:12px 14px;border-bottom:1px solid #e2e8f0}
-tbody td{padding:12px 14px;border-top:1px solid #f1f5f9}
+tbody td{padding:12px 14px;border-top:1px solid #f1f5f9;vertical-align:top}
 tr:hover{background:#fafafa}
 .order-contact{color:#0f172a;font-weight:700}
 .order-small{color:var(--muted);font-size:12px}
 .proof-link{color:#2563eb;text-decoration:none;font-weight:700}
 .proof-link:hover{text-decoration:underline}
+.btn-sm{padding:.4rem .7rem;font-size:.8rem;font-weight:700;border-radius:.5rem;cursor:pointer;border:0}
+.btn-del{background:#e11d48;color:#fff}
+.btn-del:hover{filter:brightness(.95)}
 </style>
 
 <div class="page">
@@ -48,31 +51,40 @@ tr:hover{background:#fafafa}
           <th>Proof</th>
           <th>Status</th>
           <th>Approved At</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
       @forelse($orders as $o)
         <tr>
-          <td class="order-contact">
-            {{ $o->name }}
-            <div class="order-small">{{ optional($o->user)->email }}</div>
-          </td>
+          <td class="order-contact">{{ $o->name }}</td> {{-- email removed --}}
           <td>{{ $o->phone }}</td>
           <td style="max-width:260px">{{ $o->address }}</td>
           <td><strong>PKR {{ number_format($o->total,0) }}</strong></td>
           <td style="text-transform:uppercase">{{ $o->payment_method }}</td>
           <td>
-            @if($o->payment_proof_path)
-              <a class="proof-link" href="{{ Storage::disk('public')->url($o->payment_proof_path) }}" target="_blank">View</a>
+            @if($o->payment_proof)
+              <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <a class="proof-link" href="{{ Storage::disk('public')->url($o->payment_proof) }}" target="_blank" rel="noopener">View</a>
+                <a class="proof-link" href="{{ route('admin.orders.download-proof', $o) }}">Download</a>
+              </div>
             @else
               <span class="order-small">—</span>
             @endif
           </td>
           <td><span class="badge approved">Approved</span></td>
           <td class="order-small">{{ $o->updated_at->format('M d, Y h:i A') }}</td>
+          <td>
+            <form method="POST" action="{{ route('admin.orders.destroy', $o) }}"
+                  onsubmit="return confirm('Delete this order? This cannot be undone.');">
+              @csrf
+              @method('DELETE')
+              <button class="btn-sm btn-del">Delete</button>
+            </form>
+          </td>
         </tr>
       @empty
-        <tr><td colspan="8" style="text-align:center;color:#64748b;padding:24px">No approved orders yet.</td></tr>
+        <tr><td colspan="9" style="text-align:center;color:#64748b;padding:24px">No approved orders yet.</td></tr>
       @endforelse
       </tbody>
     </table>

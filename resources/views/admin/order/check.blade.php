@@ -75,12 +75,17 @@ tr:hover{background:#fafafa}
           <td><strong>PKR {{ number_format($o->total,0) }}</strong></td>
           <td style="text-transform:uppercase">{{ $o->payment_method }}</td>
           <td>
-            @if($o->payment_proof)
-              <a class="proof-link" href="{{ Storage::disk('public')->url($o->payment_proof) }}" target="_blank">View</a>
-            @else
-              <span class="order-small">—</span>
-            @endif
-          </td>
+           <td>
+  @if($o->payment_proof)
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a class="proof-link" href="{{ Storage::disk('public')->url($o->payment_proof) }}" target="_blank" rel="noopener">View</a>
+      <a class="proof-link" href="{{ route('admin.orders.download-proof', $o) }}">Download</a>
+    </div>
+  @else
+    <span class="order-small">—</span>
+  @endif
+</td>
+
           <td><span class="badge {{ $o->status }}">{{ ucfirst($o->status) }}</span></td>
           <td class="order-small">{{ $o->created_at->format('M d, Y h:i A') }}</td>
           <td>

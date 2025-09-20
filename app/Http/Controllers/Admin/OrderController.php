@@ -82,6 +82,35 @@ class OrderController extends Controller
         return back()->with('success', 'Order approved.');
     }
 
+
+    public function downloadProof(\App\Models\Order $order)
+{
+    if (!$order->payment_proof || !\Storage::disk('public')->exists($order->payment_proof)) {
+        abort(404, 'Proof not found.');
+    }
+
+    return response()->download(
+        storage_path('app/public/'.$order->payment_proof),
+        'payment_proof_'.$order->id.'.'.pathinfo($order->payment_proof, PATHINFO_EXTENSION)
+    );
+}
+
+
+ public function destroy(Order $order)
+    {
+        // delete the proof file if present
+        if ($order->payment_proof && Storage::disk('public')->exists($order->payment_proof)) {
+            Storage::disk('public')->delete($order->payment_proof);
+        }
+
+        // if you have a relation for items, this cascade is typical:
+        // $order->items()->delete(); // only if NOT using DB cascade
+
+        $order->delete();
+
+        return back()->with('success', 'Order deleted.');
+    }
+
     /**
      * Reject a pending/approved order.
      * Route: admin.orders.reject

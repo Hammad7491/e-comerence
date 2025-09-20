@@ -4,22 +4,33 @@
   <div class="topbar">
     <div class="container">
       <div class="topbar-left">Currency : PKR</div>
-      <div class="topbar-right">
 
+      <div class="topbar-right">
         @guest
           <a href="{{ route('registerform') }}">Register</a>
           <span class="sep">|</span>
           <a href="{{ route('loginform') }}">Sign In</a>
         @else
-          <span>Welcome, {{ Auth::user()->name }}</span>
-          <span class="sep">|</span>
-          <a href="{{ route('logout') }}"
-             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-            Log Out
-          </a>
-          <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
-            @csrf
-          </form>
+          <!-- User dropdown (name only, no “Welcome”) -->
+          <div class="user-menu" x-data>
+            <button class="user-btn" type="button" aria-haspopup="menu" aria-expanded="false" id="userMenuButton">
+              <span class="user-name">{{ Auth::user()->name }}</span>
+              <svg class="chev" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+
+            <div class="user-dropdown" role="menu" aria-labelledby="userMenuButton">
+              <a role="menuitem" href="{{ route('password.change') }}">Change Password</a>
+         <a role="menuitem" href="{{ route('orders.mine') }}">My Orders</a>
+
+              <a role="menuitem" href="{{ route('cart.index') }}">My Cart</a>
+              <form role="menuitem" action="{{ route('logout') }}" method="POST" class="logout-form">
+                @csrf
+                <button type="submit">Log Out</button>
+              </form>
+            </div>
+          </div>
         @endguest
 
         @php
@@ -79,12 +90,15 @@
 <style>
 /* ---- Base ---- */
 :root{
-  --gray-900:#2f3133;           /* topbar background (dark) */
-  --gray-700:#444;              /* borders / lines subtle */
-  --txt:#7b7b7b;                /* muted text */
-  --ink:#111;                   /* main text */
-  --brand-pill:#6b1030;         /* cart maroon pill */
+  --gray-900:#2f3133;
+  --gray-700:#444;
+  --txt:#7b7b7b;
+  --ink:#111;
+  --brand-pill:#6b1030;
   --container:1220px;
+  --drop-bg:#1f2937;       /* dropdown background (slate-800) */
+  --drop-ring:#334155;     /* subtle border */
+  --drop-txt:#e5e7eb;      /* dropdown text */
 }
 .site-header{font-family:system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;}
 .container{max-width:var(--container);margin:0 auto;padding:0 16px;}
@@ -96,7 +110,34 @@
 .topbar a:hover{color:#fff;}
 .topbar .sep{opacity:.6; margin:0 8px;}
 .topbar-left{letter-spacing:.2px;}
-.topbar-right{display:flex; align-items:center; gap:8px;}
+.topbar-right{display:flex; align-items:center; gap:8px; position:relative}
+
+/* User menu */
+.user-menu{position:relative}
+.user-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:transparent;border:0;color:#fff;cursor:pointer;padding:4px 8px;
+  font-weight:700;letter-spacing:.2px;border-radius:6px
+}
+.user-btn:hover{background:#ffffff14}
+.user-name{max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-btn .chev{opacity:.85}
+
+.user-dropdown{
+  position:absolute;right:0;top:calc(100% + 6px);
+  min-width:180px;background:var(--drop-bg);border:1px solid var(--drop-ring);
+  box-shadow:0 12px 30px rgba(0,0,0,.35);border-radius:10px;padding:6px;
+  display:none; z-index:1000;
+}
+.user-dropdown a,
+.user-dropdown button{
+  display:block;width:100%;text-align:left;
+  color:var(--drop-txt);text-decoration:none;font-weight:700;font-size:12.5px;letter-spacing:.08em;
+  padding:10px 10px;border-radius:8px;background:transparent;border:0;cursor:pointer
+}
+.user-dropdown a:hover,
+.user-dropdown button:hover{background:#ffffff12}
+.logout-form{margin:0}
 
 /* cart pill (maroon) */
 .cart-pill{
@@ -153,7 +194,6 @@
 }
 
 @media (max-width:720px){
-  /* stack header: brand + toggle row, then nav + search row */
   .main-header .container{grid-template-columns:1fr auto; grid-template-areas:
     "brand toggle"
     "nav   nav"
@@ -175,14 +215,37 @@
 </style>
 
 <script>
-/* minimal mobile menu toggle */
+/* minimal mobile menu toggle + user dropdown */
 document.addEventListener('DOMContentLoaded', function () {
   const btn = document.querySelector('.nav-toggle');
   const nav = document.querySelector('.nav');
-  if (!btn || !nav) return;
-  btn.addEventListener('click', function(){
-    const open = nav.classList.toggle('open');
-    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  if (btn && nav) {
+    btn.addEventListener('click', function(){
+      const open = nav.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+
+  const userBtn = document.getElementById('userMenuButton');
+  const dropdown = document.querySelector('.user-dropdown');
+
+  function closeMenu(){
+    if(!dropdown) return;
+    dropdown.style.display = 'none';
+    userBtn?.setAttribute('aria-expanded','false');
+  }
+  function toggleMenu(){
+    if(!dropdown) return;
+    const open = dropdown.style.display === 'block';
+    dropdown.style.display = open ? 'none' : 'block';
+    userBtn?.setAttribute('aria-expanded', open ? 'false' : 'true');
+  }
+
+  userBtn?.addEventListener('click', (e)=>{ e.stopPropagation(); toggleMenu(); });
+  document.addEventListener('click', (e)=>{
+    if (!dropdown) return;
+    if (!dropdown.contains(e.target) && e.target !== userBtn) closeMenu();
   });
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeMenu(); });
 });
 </script>

@@ -36,11 +36,20 @@
   .input, .textarea{width:100%;border:1px solid #e7e5e4;border-radius:6px;background:#fff;padding:10px 12px;font:600 14px/1.3 "Inter";color:#111827}
   .textarea{min-height:88px;resize:vertical}
 
-  /* radios row */
-  .radio-row{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:2px}
-  .radio{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid #e6d8cf;border-radius:24px;background:#fff}
-  .radio input{width:16px;height:16px}
-  .radio label{font:800 12px "Inter";letter-spacing:.08em}
+  /* ===== Radios row (FIXED) ===== */
+  .radio-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:4px}
+  .radio{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:8px 12px;border:1px solid #e6d8cf;border-radius:22px;background:#fff;
+  }
+  .radio input{
+    width:16px;height:16px;
+    /* force native radios to show even if a reset hides them */
+    appearance:auto; -webkit-appearance:auto; -moz-appearance:auto;
+    accent-color: var(--maroon);
+    margin:0;
+  }
+  .radio span{font:800 12px "Inter";letter-spacing:.08em;color:#111827}
 
   .help{color:var(--muted);font:600 13px;margin:6px 0 10px}
 
@@ -117,23 +126,26 @@
 
           <div class="section-title" style="margin-top:6px">Payment<br>Method</div>
 
-          <!-- Visible radios -->
+          <!-- FIXED: radios visible and styled -->
           <div class="radio-row" role="radiogroup" aria-label="Payment method">
-            <div class="radio">
-              <input type="radio" id="pm_cash" name="payment_method" value="cash" {{ old('payment_method','cash')==='cash' ? 'checked':'' }}>
-              <label for="pm_cash">Cash on Delivery</label>
-            </div>
-            <div class="radio">
-              <input type="radio" id="pm_online" name="payment_method" value="online" {{ old('payment_method')==='online' ? 'checked':'' }}>
-              <label for="pm_online">Online Transfer</label>
-            </div>
+            <label class="radio">
+              <input type="radio" name="payment_method" value="cash"
+                     {{ old('payment_method','cash')==='cash' ? 'checked' : '' }}>
+              <span>Cash on Delivery</span>
+            </label>
+
+            <label class="radio">
+              <input type="radio" name="payment_method" value="online"
+                     {{ old('payment_method')==='online' ? 'checked' : '' }}>
+              <span>Online Transfer</span>
+            </label>
           </div>
 
           <p class="help">Choose how you want to pay.</p>
 
-          <!-- Account details + proof (for ONLINE) -->
+          <!-- Account details + proof (only for ONLINE) -->
           <div id="acctBox" class="acct {{ old('payment_method')==='online' ? 'show' : '' }}">
-            <h5>Send To:</h5>
+            <h5>Send to:</h5>
             <div class="small">
               Account Title: <strong>{{ $bank['title'] }}</strong><br>
               Account Number: <strong>{{ $bank['account'] }}</strong><br>
@@ -190,8 +202,7 @@
 
 @section('scripts')
 <script>
-  // Toggle account box + proof requirement based on selected payment method
-  const radios = document.querySelectorAll('input[name="payment_method"]');
+  const radios  = document.querySelectorAll('input[name="payment_method"]');
   const acctBox = document.getElementById('acctBox');
   const proof   = document.getElementById('payment_proof');
 
@@ -208,7 +219,7 @@
   radios.forEach(r => r.addEventListener('change', refreshPaymentUI));
   refreshPaymentUI();
 
-  // Prevent multiple submits
+  // prevent double submit
   const form = document.getElementById('checkout-form');
   const btn  = document.getElementById('submitBtn');
   form?.addEventListener('submit', () => { btn.disabled = true; btn.textContent = 'Submitting...'; });

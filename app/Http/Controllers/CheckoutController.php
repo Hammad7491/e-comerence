@@ -9,28 +9,20 @@ use Illuminate\Validation\Rule;
 
 class CheckoutController extends Controller
 {
-    /**
-     * Show the checkout page with the user's cart and bank info.
-     */
     public function create(Request $request)
     {
-        // Bank details shown when "Online Transfer" is selected
         $bank = [
             'title'    => 'Guley Threads',
             'account'  => '1234567890123',
             'provider' => 'Meezan Bank',
         ];
 
-        // Per-user cart key so each logged-in user sees their own cart
         $cartKey = 'cart_user_' . auth()->id();
         $cart    = $request->session()->get($cartKey, ['items' => [], 'total' => 0]);
 
         return view('frontend.checkout', compact('bank', 'cart'));
     }
 
-    /**
-     * Create a pending order. If "ONLINE", require a proof image.
-     */
     public function store(Request $request)
     {
         $userId  = auth()->id();
@@ -41,7 +33,6 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index')->with('success', 'Your cart is empty.');
         }
 
-        // The view posts lowercase: 'cash' | 'online'
         $data = $request->validate([
             'name'           => ['required', 'string', 'max:255'],
             'phone'          => ['required', 'string', 'max:50'],
@@ -50,12 +41,12 @@ class CheckoutController extends Controller
             'payment_proof'  => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ]);
 
-        // Map to DB ENUM values (uppercase)
-        $dbMethod = $data['payment_method'] === 'online' ? 'ONLINE' : 'CASH';
+        // normalize strictly to 'cash' | 'online'
+        $method = strtolower($data['payment_method']);
+        if ($method === 'cod') { $method = 'cash'; } // just in case
 
-        // For ONLINE, proof is required
         $proofPath = null;
-        if ($dbMethod === 'ONLINE') {
+        if ($method === 'online') {
             $request->validate([
                 'payment_proof' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             ]);
@@ -64,19 +55,17 @@ class CheckoutController extends Controller
             }
         }
 
-        // Create order (pending)
         $order = Order::create([
             'user_id'        => $userId,
             'name'           => $data['name'],
             'phone'          => $data['phone'],
             'address'        => $data['address'],
-            'payment_method' => $dbMethod,           // "CASH" or "ONLINE"
-            'payment_proof'  => $proofPath,          // null for CASH
+            'payment_method' => $method,      // 'cash' | 'online'
+            'payment_proof'  => $proofPath,   // null for cash
             'total'          => (float)($cart['total'] ?? 0),
             'status'         => 'pending',
         ]);
 
-        // Save items
         foreach ($cart['items'] as $row) {
             OrderItem::create([
                 'order_id'   => $order->id,
@@ -88,11 +77,8 @@ class CheckoutController extends Controller
             ]);
         }
 
-        // Clear this user's cart
         $request->session()->forget($cartKey);
 
-        return redirect()
-            ->route('home')
-            ->with('success', 'Order placed! We will review and update you soon.');
+        return redirect()->route('home')->with('success', 'Order placed! We will review and update you soon.');
     }
 }

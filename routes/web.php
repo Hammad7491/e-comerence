@@ -113,3 +113,30 @@ Route::prefix('admin')
         Route::patch('/orders/{order}/approve', [OrderController::class, 'approve'])->name('orders.approve');
         Route::patch('/orders/{order}/reject',  [OrderController::class, 'reject'])->name('orders.reject');
     });
+
+   // routes/web.php
+
+Route::prefix('admin')->middleware(['auth','role:admin'])->name('admin.')->group(function () {
+    // …your other admin routes…
+
+    // download the payment proof (forces download)
+    Route::get('/orders/{order}/download-proof', [\App\Http\Controllers\Admin\OrderController::class, 'downloadProof'])
+        ->name('orders.download-proof');
+
+    // delete an order
+    Route::delete('/orders/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'destroy'])
+        ->name('orders.destroy');
+});
+
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/change-password',  [ProfileController::class, 'changePassword'])->name('password.change');
+    Route::post('/change-password', [ProfileController::class, 'updatePassword'])->name('password.update');
+});
+
+
+
+// Logged-in user: My Orders
+Route::middleware('auth')->get('/my-orders', [\App\Http\Controllers\OrderHistoryController::class, 'index'])
+     ->name('orders.mine');
