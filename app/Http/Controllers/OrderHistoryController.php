@@ -9,7 +9,17 @@ class OrderHistoryController extends Controller
 {
     public function index(Request $request)
     {
-        $orders = Order::with(['items'])   // assumes relation items() in Order model
+        $orders = Order::query()
+            ->with([
+                // keep the slim select for order items (these columns exist)
+                'items:id,order_id,product_id,name,price,qty,total',
+
+                // ❌ remove the column list that referenced a non-existent field
+                // 'items.product:id,name,image,images',
+
+                // ✅ just load the product relation with all columns
+                'items.product',
+            ])
             ->where('user_id', auth()->id())
             ->latest()
             ->paginate(10);
