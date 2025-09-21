@@ -73,7 +73,8 @@
 
       <nav class="nav" aria-label="Primary">
         <ul>
-          <li><a href="/brand">THE BRAND</a></li>
+          <a href="{{ route('brand') }}">THE BRAND</a>
+
           <li><a href="/women">WOMEN</a></li>
           <li><a href="/contact">CONTACT US</a></li>
         </ul>

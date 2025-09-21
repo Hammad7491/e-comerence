@@ -140,3 +140,8 @@ Route::middleware('auth')->group(function () {
 // Logged-in user: My Orders
 Route::middleware('auth')->get('/my-orders', [\App\Http\Controllers\OrderHistoryController::class, 'index'])
      ->name('orders.mine');
+
+     // Brand page route
+Route::get('/brand', function () {
+    return view('frontend.brand');
+})->name('brand');

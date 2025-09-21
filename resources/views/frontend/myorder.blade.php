@@ -16,16 +16,27 @@
   .pv-ghost{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:900 clamp(100px,16vw,200px)/.9 "Inter";color:#ffffff12;letter-spacing:.08em;pointer-events:none}
 
   /* ===== WRAP ===== */
-  .wrap{max-width:980px;margin:30px auto;background:var(--sand);border-radius:8px}
+  .wrap{max-width:1180px;margin:30px auto;background:var(--sand);border-radius:8px}
   .inner{padding:22px}
   @media (max-width:640px){ .inner{padding:16px} }
 
+  /* ===== GRID: 1 col on mobile, 2 cols >= 992px ===== */
+  .orders-grid{display:grid;grid-template-columns:1fr;gap:18px;}
+  @media (min-width:992px){.orders-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+
   /* Order card */
-  .order{background:var(--card);border-radius:12px;overflow:hidden;border:1px solid #f0ebe4;margin-bottom:16px}
+  .order{background:var(--card);border-radius:12px;overflow:hidden;border:1px solid #f0ebe4}
   .order-h{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #f4efe6;background:#fffdfb}
   .order-left{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
   .h-meta{color:var(--muted);font:700 12px "Inter";letter-spacing:.08em;text-transform:uppercase}
   .h-strong{font:900 14px "Inter";color:#111827}
+
+  /* Order number chip */
+  .ord-num{
+    background:#f1eff2;border:1px solid #e3d9e6;color:#4b1641;
+    font:800 11px/1 "Inter";border-radius:999px;padding:6px 10px;margin-right:6px;
+    text-transform:uppercase;letter-spacing:.06em;
+  }
 
   .badge{display:inline-flex;align-items:center;gap:6px;font:800 11px/1 "Inter";padding:6px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:.06em}
   .pending{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}
@@ -45,11 +56,14 @@
   .pname{font-weight:700}
   .muted{color:var(--muted);font-weight:600;font-size:12px}
 
+  /* Hide inline cell labels on desktop so you don't see "PriceQtyTotal" */
+  .cell{display:none}
+
   .tfoot{display:flex;justify-content:flex-end;gap:18px;align-items:center;padding:12px 8px 14px;border-top:1px dashed #eee}
   .lab{font:800 12px "Inter";text-transform:uppercase;letter-spacing:.12em;color:#111827}
   .amt{font:900 16px "Inter";color:#111827}
 
-  /* Mobile cards */
+  /* Mobile table -> cards */
   @media (max-width:760px){
     .order-h{align-items:flex-start}
     .items thead{display:none}
@@ -66,155 +80,125 @@
 @php
   use Illuminate\Support\Str;
 
-  /**
-   * Resolve a usable image URL for an order item.
-   * Tries:
-   *  - $item->image (if you ever store a snapshot on the item)
-   *  - $item->product->image
-   *  - first image from $item->product->images (json/array)
-   * Accepts absolute URLs, /storage/*, or relative paths (mapped to asset('storage/...')).
-   * Always falls back to a reliable remote placeholder.
-   */
+  /* Image resolver for each order item */
   function orderItemImageUrl($item) {
       $placeholder = 'https://via.placeholder.com/112x112.png?text=No+Image';
-
       $candidates = [];
 
-      if (!empty($item->image)) {
-          $candidates[] = $item->image;
-      }
-      if (!empty(optional($item->product)->image)) {
-          $candidates[] = $item->product->image;
-      }
+      if (!empty($item->image)) $candidates[] = $item->image;
+      if (!empty(optional($item->product)->image)) $candidates[] = $item->product->image;
 
       $imgs = optional($item->product)->images ?? null;
       if (is_string($imgs)) {
           $decoded = json_decode($imgs, true);
-          if (is_array($decoded) && !empty($decoded)) {
-              $candidates[] = $decoded[0];
-          }
+          if (is_array($decoded) && !empty($decoded)) $candidates[] = $decoded[0];
       } elseif (is_array($imgs) && !empty($imgs)) {
           $candidates[] = $imgs[0];
       }
 
       foreach ($candidates as $p) {
-          if (!is_string($p) || trim($p) === '') continue;
-
-          // already full or already /storage path
-          if (Str::startsWith($p, ['http://', 'https://', '/storage/'])) {
-              return $p;
-          }
-
-          // likely a relative path stored on the "public" disk
-          return asset('storage/' . ltrim($p, '/'));
+          if (!is_string($p) || trim($p)==='') continue;
+          if (Str::startsWith($p, ['http://','https://','/storage/'])) return $p;
+          return asset('storage/'.ltrim($p,'/'));
       }
-
       return $placeholder;
   }
 @endphp
 
 @section('content')
+  <!-- HERO -->
+  <header class="pv-hero">
+    <div class="fx"><div class="pv-eyebrow">MY ORDER</div></div>
+    <div class="pv-ghost">GULEY THREADS</div>
+  </header>
 
-<!-- HERO -->
-<header class="pv-hero">
-  <div class="fx"><div class="pv-eyebrow">MY ORDER</div></div>
-  <div class="pv-ghost">GULEY THREADS</div>
-</header>
+  <section class="wrap">
+    <div class="inner fx">
+      @if($orders->isEmpty())
+        <div style="background:#fff;border:1px dashed #e5e7eb;border-radius:10px;padding:24px;text-align:center;color:#6b7280;font:600 14px 'Inter'">
+          You haven’t placed any orders yet.
+        </div>
+      @else
 
-<section class="wrap">
-  <div class="inner fx">
+        <!-- GRID WRAPPER -->
+        <div class="orders-grid">
+          @foreach($orders as $order)
+            @php
+              $statusClass = $order->status === 'approved' ? 'approved' : ($order->status === 'rejected' ? 'rejected' : 'pending');
+            @endphp
 
-    @if($orders->isEmpty())
-      <div style="background:#fff;border:1px dashed #e5e7eb;border-radius:10px;padding:24px;text-align:center;color:#6b7280;font:600 14px 'Inter'">
-        You haven’t placed any orders yet.
-      </div>
-    @else
-      @foreach($orders as $order)
-        @php
-          $statusClass = $order->status === 'approved' ? 'approved' : ($order->status === 'rejected' ? 'rejected' : 'pending');
-        @endphp
+            <article class="order">
+              <!-- Header (NO top grand total) -->
+              <div class="order-h">
+                <div class="order-left">
+                  <span class="ord-num">Order {{ $loop->iteration }}</span>
 
-        <article class="order">
-          <!-- Header -->
-          <div class="order-h">
-            <div class="order-left">
-              <div>
-                <div class="h-meta">Date</div>
-                <div class="h-strong">{{ $order->created_at->format('M d, Y') }}</div>
+                  <div>
+                    <div class="h-meta">Date</div>
+                    <div class="h-strong">{{ $order->created_at->format('M d, Y') }}</div>
+                  </div>
+                  <div>
+                    <div class="h-meta">Payment</div>
+                    <div class="h-strong">{{ strtoupper($order->payment_method) }}</div>
+                  </div>
+                  <div>
+                    <div class="h-meta">Status</div>
+                    <span class="badge {{ $statusClass }}">{{ ucfirst($order->status ?? 'pending') }}</span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <div class="h-meta">Payment</div>
-                <div class="h-strong">{{ strtoupper($order->payment_method) }}</div>
+
+              <!-- Items -->
+              <div class="order-body">
+                <table class="items">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th style="width:120px">Price</th>
+                      <th style="width:80px">Qty</th>
+                      <th style="width:140px">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach($order->items as $it)
+                      @php $img = orderItemImageUrl($it); @endphp
+                      <tr>
+                        <td>
+                          <span class="cell">Product</span>
+                          <div class="prod">
+                            <img class="thumb" src="{{ $img }}" alt="product"
+                                 onerror="this.onerror=null;this.src='https://via.placeholder.com/112x112.png?text=No+Image';">
+                            <div>
+                              <div class="pname">{{ $it->name }}</div>
+                              <div class="muted">{{ $order->created_at->format('h:i A') }}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <!-- No "Price" word in the value, only PKR + number -->
+                        <td><span class="cell">Price</span>PKR {{ number_format($it->price,0) }}</td>
+                        <!-- No "Qty" word, only the number -->
+                        <td><span class="cell">Qty</span>{{ $it->qty }}</td>
+                        <!-- No "Total" word in the value, only PKR + number -->
+                        <td><span class="cell">Total</span><strong>PKR {{ number_format($it->total,0) }}</strong></td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+
+                <!-- Keep bottom grand total -->
+                <div class="tfoot">
+                  <span class="lab">Grand Total</span>
+                  <span class="amt">PKR {{ number_format($order->total,0) }}</span>
+                </div>
               </div>
-              <div>
-                <div class="h-meta">Status</div>
-                <span class="badge {{ $statusClass }}">{{ ucfirst($order->status ?? 'pending') }}</span>
-              </div>
-            </div>
+            </article>
+          @endforeach
+        </div>
 
-            <div>
-              <div class="h-meta" style="text-align:right">Grand Total</div>
-              <div class="h-strong">PKR {{ number_format($order->total,0) }}</div>
-            </div>
-          </div>
-
-          <!-- Items -->
-          <div class="order-body">
-            <table class="items">
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th style="width:120px">Price</th>
-                  <th style="width:80px">Qty</th>
-                  <th style="width:140px">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-              @foreach($order->items as $it)
-                @php $img = orderItemImageUrl($it); @endphp
-                <tr>
-                  <td>
-                    <span class="cell">Product</span>
-                    <div class="prod">
-                      <img class="thumb"
-                           src="{{ $img }}"
-                           alt="product"
-                           onerror="this.onerror=null;this.src='https://via.placeholder.com/112x112.png?text=No+Image';">
-                      <div>
-                        <div class="pname">{{ $it->name }}</div>
-                        <div class="muted">{{ $order->created_at->format('h:i A') }}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <span class="cell">Price</span>
-                    PKR {{ number_format($it->price,0) }}
-                  </td>
-                  <td>
-                    <span class="cell">Qty</span>
-                    {{ $it->qty }}
-                  </td>
-                  <td>
-                    <span class="cell">Total</span>
-                    <strong>PKR {{ number_format($it->total,0) }}</strong>
-                  </td>
-                </tr>
-              @endforeach
-              </tbody>
-            </table>
-
-            <div class="tfoot">
-              <span class="lab">Grand Total</span>
-              <span class="amt">PKR {{ number_format($order->total,0) }}</span>
-            </div>
-          </div>
-        </article>
-      @endforeach
-
-      <div style="margin-top:16px">
-        {{ $orders->links() }}
-      </div>
-    @endif
-  </div>
-</section>
+        <div style="margin-top:16px">
+          {{ $orders->links() }}
+        </div>
+      @endif
+    </div>
+  </section>
 @endsection
