@@ -12,7 +12,7 @@
           <a href="{{ route('loginform') }}">Sign In</a>
         @else
           <!-- User dropdown (name only, no “Welcome”) -->
-          <div class="user-menu" x-data>
+          <div class="user-menu">
             <button class="user-btn" type="button" aria-haspopup="menu" aria-expanded="false" id="userMenuButton">
               <span class="user-name">{{ Auth::user()->name }}</span>
               <svg class="chev" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
@@ -22,8 +22,7 @@
 
             <div class="user-dropdown" role="menu" aria-labelledby="userMenuButton">
               <a role="menuitem" href="{{ route('password.change') }}">Change Password</a>
-         <a role="menuitem" href="{{ route('orders.mine') }}">My Orders</a>
-
+              <a role="menuitem" href="{{ route('orders.mine') }}">My Orders</a>
               <a role="menuitem" href="{{ route('cart.index') }}">My Cart</a>
               <form role="menuitem" action="{{ route('logout') }}" method="POST" class="logout-form">
                 @csrf
@@ -34,7 +33,6 @@
         @endguest
 
         @php
-          // Per-user cart key (users see only their cart; guests have their own cart)
           $cartKey   = auth()->check() ? 'cart_user_'.auth()->id() : 'cart_guest';
           $cartItems = collect(session($cartKey.'.items', []));
           $cartQty   = (int) $cartItems->sum('qty');
@@ -58,7 +56,8 @@
     <div class="container">
       <div class="brand">
         <a class="logo" href="{{ route('home') }}">
-          <img src="/assets/images/logo.png" alt="Guley Threads" />
+       <img src="{{ asset('assets/images/guley.jpg') }}" alt="Guley Threads" />
+
         </a>
         <a class="brand-text" href="{{ route('home') }}">
           <span>Guley</span>
@@ -71,12 +70,13 @@
         <span></span><span></span><span></span>
       </button>
 
+      <!-- Centered navigation row -->
       <nav class="nav" aria-label="Primary">
         <ul>
-          <a href="{{ route('brand') }}">THE BRAND</a>
-
+          <li><a href="{{ route('home') }}">HOME</a></li>
+          <li><a href="{{ route('brand') }}">THE BRAND</a></li>
           <li><a href="/women">WOMEN</a></li>
-          <li><a href="/contact">CONTACT US</a></li>
+          <li><a href="{{ route('contact') }}">CONTACT US</a></li>
         </ul>
       </nav>
 
@@ -97,11 +97,11 @@
   --ink:#111;
   --brand-pill:#6b1030;
   --container:1220px;
-  --drop-bg:#1f2937;       /* dropdown background (slate-800) */
-  --drop-ring:#334155;     /* subtle border */
-  --drop-txt:#e5e7eb;      /* dropdown text */
+  --drop-bg:#1f2937;
+  --drop-ring:#334155;
+  --drop-txt:#e5e7eb;
 }
-.site-header{font-family:system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;}
+.site-header{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,sans-serif;}
 .container{max-width:var(--container);margin:0 auto;padding:0 16px;}
 
 /* ---- Topbar ---- */
@@ -116,9 +116,8 @@
 /* User menu */
 .user-menu{position:relative}
 .user-btn{
-  display:inline-flex;align-items:center;gap:6px;
-  background:transparent;border:0;color:#fff;cursor:pointer;padding:4px 8px;
-  font-weight:700;letter-spacing:.2px;border-radius:6px
+  display:inline-flex;align-items:center;gap:6px;background:transparent;border:0;color:#fff;cursor:pointer;
+  padding:4px 8px;font-weight:700;letter-spacing:.2px;border-radius:6px
 }
 .user-btn:hover{background:#ffffff14}
 .user-name{max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -126,15 +125,14 @@
 
 .user-dropdown{
   position:absolute;right:0;top:calc(100% + 6px);
-  min-width:180px;background:var(--drop-bg);border:1px solid var(--drop-ring);
+  min-width:200px;background:var(--drop-bg);border:1px solid var(--drop-ring);
   box-shadow:0 12px 30px rgba(0,0,0,.35);border-radius:10px;padding:6px;
   display:none; z-index:1000;
 }
 .user-dropdown a,
 .user-dropdown button{
-  display:block;width:100%;text-align:left;
-  color:var(--drop-txt);text-decoration:none;font-weight:700;font-size:12.5px;letter-spacing:.08em;
-  padding:10px 10px;border-radius:8px;background:transparent;border:0;cursor:pointer
+  display:block;width:100%;text-align:left;color:var(--drop-txt);text-decoration:none;
+  font-weight:700;font-size:12.5px;letter-spacing:.08em;padding:10px 10px;border-radius:8px;background:transparent;border:0;cursor:pointer
 }
 .user-dropdown a:hover,
 .user-dropdown button:hover{background:#ffffff12}
@@ -156,8 +154,12 @@
 /* ---- Main header ---- */
 .main-header{background:#f6f6f6;}
 .main-header .container{
-  display:grid; grid-template-columns:auto 1fr auto; align-items:center;
-  gap:24px; padding:18px 16px;
+  /* single line, perfectly centered nav row */
+  display:grid;
+  grid-template-columns:auto 1fr auto; /* brand | nav | search */
+  align-items:center;
+  gap:24px;
+  padding:18px 16px;
 }
 
 /* brand (logo + stacked name) */
@@ -167,12 +169,18 @@
 .brand-text span{font-weight:800; color:#b0b0b0; font-size:28px; letter-spacing:.02em;}
 .brand-text span + span{margin-top:2px;}
 
-/* nav */
-.nav ul{display:flex; gap:36px; list-style:none; margin:0; padding:0; justify-content:center;}
+/* nav (centered) */
+.nav{display:flex; justify-content:center;}
+.nav ul{
+  display:flex; align-items:center; justify-content:center;
+  gap:36px; list-style:none; margin:0; padding:0;
+}
+.nav li{display:inline-flex}
 .nav a{color:var(--ink); text-decoration:none; font-weight:600; font-size:12.5px; letter-spacing:.12em;}
 .nav a:hover{opacity:.7;}
 
 /* search */
+.search{display:flex; justify-content:flex-end}
 .search input{
   width:190px; height:26px; border:1px solid #e5e5e5; border-radius:3px;
   padding:0 8px; font-size:12px; color:#333; background:#fff;
@@ -195,15 +203,22 @@
 }
 
 @media (max-width:720px){
-  .main-header .container{grid-template-columns:1fr auto; grid-template-areas:
-    "brand toggle"
-    "nav   nav"
-    "search search"; row-gap:10px;}
+  .main-header .container{
+    grid-template-columns:1fr auto;
+    grid-template-areas:
+      "brand toggle"
+      "nav   nav"
+      "search search";
+    row-gap:10px;
+  }
   .brand{grid-area:brand}
   .nav-toggle{display:block; grid-area:toggle}
   .nav{grid-area:nav}
   .search{grid-area:search}
-  .nav ul{flex-direction:column; gap:10px; border-top:1px solid #e7e7e7; padding-top:10px; display:none;}
+  .nav ul{
+    flex-direction:column; gap:10px;
+    border-top:1px solid #e7e7e7; padding-top:10px; display:none;
+  }
   .nav.open ul{display:flex;}
   .search{display:flex; justify-content:flex-end}
   .search input{width:100%}
@@ -233,13 +248,13 @@ document.addEventListener('DOMContentLoaded', function () {
   function closeMenu(){
     if(!dropdown) return;
     dropdown.style.display = 'none';
-    userBtn?.setAttribute('aria-expanded','false');
+    if (userBtn) userBtn.setAttribute('aria-expanded','false');
   }
   function toggleMenu(){
     if(!dropdown) return;
     const open = dropdown.style.display === 'block';
     dropdown.style.display = open ? 'none' : 'block';
-    userBtn?.setAttribute('aria-expanded', open ? 'false' : 'true');
+    if (userBtn) userBtn.setAttribute('aria-expanded', open ? 'false' : 'true');
   }
 
   userBtn?.addEventListener('click', (e)=>{ e.stopPropagation(); toggleMenu(); });

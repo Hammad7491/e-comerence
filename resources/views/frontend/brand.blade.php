@@ -4,57 +4,86 @@
 @section('styles')
 <style>
   :root{
-    --ink:#0f0f10; --muted:#6b7280; --maroon:#6B1030;
+    --ink:#0f0f10;
+    --muted:#656b74;
+    --ring:#e9e7e2;
   }
-  .fx{max-width:1200px;margin:0 auto;padding:0 18px}
+  .fx{max-width:1180px;margin:0 auto;padding:0 18px}
 
-  /* ===== HERO (as in reference) ===== */
+  /* ===== HERO (same as cart) ===== */
   .brand-hero{
-    position:relative; min-height:360px; color:#fff; overflow:hidden;
-    display:flex; align-items:center; justify-content:center; text-align:center;
+    background:#2a2a2c;
+    color:#fff;
+    min-height:200px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+    text-align:center;
   }
-  .brand-hero::before{
-    content:""; position:absolute; inset:0;
-    background:url("/assets/images/brand/hero.jpg") center/cover no-repeat;
-    filter:brightness(.55);
+  .brand-hero .eyebrow{
+    font:800 35px/1.1 "Inter",system-ui;
+    letter-spacing:.18em;
+    text-transform:uppercase;
   }
   .brand-hero .ghost{
-    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-    font:900 clamp(64px,16vw,220px)/.9 "Inter",system-ui;
-    letter-spacing:.06em; color:#ffffff10; pointer-events:none;
-  }
-  .brand-hero .inner{position:relative; z-index:2; padding:40px 18px}
-  .brand-eyebrow{
-    font:900 clamp(16px,2.6vw,22px)/1 "Inter"; letter-spacing:.25em; color:#fff; text-transform:uppercase;
-  }
-  .brand-quote{
-    margin-top:8px; color:#e7e9ee;
-    font:700 clamp(11px,1.8vw,13px)/1.2 "Inter"; letter-spacing:.22em;
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font:900 clamp(100px,16vw,200px)/.9 "Inter";
+    color:#ffffff12;
+    letter-spacing:.08em;
+    pointer-events:none;
   }
 
-  /* ===== CONTENT ===== */
-  .brand-wrap{background:#fff; padding:44px 0 60px}
+  /* ===== BODY ===== */
+  .wrap{background:#fff}
+  .block{padding:44px 0 16px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:40px}
 
-  /* row 1: image left / text right  — row 2: two tiles with image then text */
-  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:36px}
-  .tile-img img{display:block; width:100%; height:auto; border-radius:4px}
-  .tile-text{padding-top:6px}
-  .eyebrow{
-    font:800 11px/1 "Inter"; letter-spacing:.18em; text-transform:uppercase; color:#6b7280; margin-bottom:6px
+  .img-frame{
+    border:1px solid var(--ring);
+    padding:10px;
+    border-radius:2px;
+    background:#fff;
   }
-  .h2{font:900 clamp(18px,2.2vw,28px)/1.15 "Inter"; color:#0f172a; margin:0 0 8px}
-  .copy{font:600 14px/1.55 "Inter"; color:#374151}
+  .img-frame img{display:block;width:100%;height:auto}
 
-  /* circular palette image (right tile) */
-  .circle img{border-radius:999px}
+  .h-eyebrow{
+    font:800 20px/1 "Inter";
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:#7a808a;
+    margin:10px 0;
+  }
+  .story p,
+  .values p,
+  .ethics p{
+    font:600 14px/1.65 "Inter";
+    color:#2e3136;
+    margin:.45rem 0;
+  }
 
-  /* spacing & subtle divider look like reference */
-  .section-gap{margin-top:34px}
-  .thin-rule{height:1px;background:#f2f2f2;margin:20px 0}
+  .ethics h4{
+    text-align:center;
+    margin:0 0 10px;
+    font:800 12px/1 "Inter";
+    letter-spacing:.18em;
+    color:#79808a;
+    text-transform:uppercase;
+  }
+  .ethics .tight{line-height:1.35;text-align:center}
+
+  .circle{border-radius:999px;overflow:hidden;border:1px solid var(--ring)}
+  .mt24{margin-top:24px}
 
   /* ===== Responsive ===== */
-  @media (max-width:980px){
-    .grid-2{grid-template-columns:1fr; gap:26px}
+  @media (max-width: 980px){
+    .grid-2{grid-template-columns:1fr;gap:26px}
+    .ethics h4{margin-top:16px}
   }
 </style>
 @endsection
@@ -62,75 +91,57 @@
 @section('content')
   <!-- HERO -->
   <header class="brand-hero">
+    <div class="eyebrow">THE BRAND</div>
     <div class="ghost">GULEY THREADS</div>
-    <div class="inner fx">
-      <div class="brand-eyebrow">THE BRAND</div>
-      <div class="brand-quote">“ FROM NEEDLE TO NEED — MADE FOR YOU ”</div>
-    </div>
   </header>
 
   <!-- BODY -->
-  <section class="brand-wrap">
-    <div class="fx">
-
-      <!-- Row 1: Image (left) + Our Story (right) -->
+  <section class="wrap">
+    <div class="fx block">
+      <!-- Row 1: left image, right story -->
       <div class="grid-2">
-        <figure class="tile-img">
+        <figure class="img-frame">
           <img src="/assets/images/brand/needle-embroidery.jpg" alt="Hand embroidery close-up">
         </figure>
 
-        <div class="tile-text">
-          <div class="eyebrow">OUR STORY</div>
-          <h2 class="h2">A craft that weaves culture with care</h2>
-          <p class="copy">
-            At Guley Threads, every stitch tells a story — from traditional handwork to modern silhouettes
-            crafted for everyday life. What began as a small atelier has grown into a studio driven by
-            community, craft, and character. We design pieces you’ll reach for again and again, blending
-            soft fabrics, lasting construction, and quiet detail that feels both familiar and new.
-          </p>
-          <p class="copy" style="margin-top:10px">
-            We partner with skilled artisans and small workshops, honoring time-tested techniques while
-            embracing thoughtful innovations that reduce waste.
-          </p>
+        <div class="story">
+          <div class="h-eyebrow">OUR STORY</div>
+          <p>at guley threads, every stitch tells a story.</p>
+          <p>founded in 2025, our brand was born out of a deep love for traditional hand embroidery and timeless craftsmanship. what started as a small home studio with a passion for preserving age-old techniques has now grown into a clothing label that celebrates slow fashion, cultural heritage, and meaningful design.</p>
+          <p>we work closely with skilled artisans who pour generations of knowledge and artistry into every garment. each piece is carefully hand-embroidered, making it not just clothing, but wearable art: crafted with patience, precision, and pride.</p>
         </div>
       </div>
 
-      <!-- Row 2: two tiles -->
-      <div class="section-gap grid-2">
-        <!-- Left tile -->
+      <!-- Row 2: left values (image + copy), right ethics (circle image + centered text) -->
+      <div class="grid-2 mt24">
         <div>
-          <figure class="tile-img">
+          <figure class="img-frame">
             <img src="/assets/images/brand/handwork-border.jpg" alt="Handcrafted floral border">
           </figure>
-          <div class="tile-text">
-            <div class="eyebrow">OUR VALUES, VISION & STRATEGY</div>
-            <h2 class="h2">Designed to be worn, loved, and kept</h2>
-            <p class="copy">
-              Our vision is conscious fashion with purpose: pieces that respect your wardrobe, your wallet,
-              and the world. We prioritize durable materials, versatile fits, and timeless palettes so your
-              clothes move with you — season after season. Our strategy is simple: make fewer, better things
-              and support the hands that make them.
-            </p>
+          <div class="values mt24">
+            <div class="h-eyebrow">OUR VALUES, VISION AND STRATEGY</div>
+            <p>we believe in the beauty of craftsmanship, the importance of fair treatment for artisans, and the need for sustainable, mindful fashion. each piece we create reflects our respect for cultural heritage and individuality, made with care and intention. our vision is to bring handcrafted, meaningful clothing to people who value quality and ethics, while supporting the communities behind the art. we do this by working directly with skilled artisans, designing timeless styles, producing responsibly, and building connections with conscious customers around the world.</p>
           </div>
         </div>
 
-        <!-- Right tile -->
         <div>
-          <figure class="tile-img circle">
+          <figure class="img-frame circle">
             <img src="/assets/images/brand/palette-wheel.jpg" alt="Color palette wheel">
           </figure>
-          <div class="tile-text">
-            <div class="eyebrow">ETHICAL TRADING</div>
-            <h2 class="h2">People first, always</h2>
-            <p class="copy">
-              We’re committed to fair work and fair wages across our supply chain: transparent relationships,
-              safe workplaces, and continuous learning for our teams. We buy responsibly, plan mindfully, and
-              reduce excess through small-batch production — keeping quality high and waste low.
-            </p>
+          <div class="ethics mt24">
+            <h4>ETHICAL TRADING</h4>
+            <p class="tight">we are committed to ethical trading and fair business practices. we believe fashion<br>
+              should empower— not exploit.</p>
+            <p class="tight">we work directly with skilled artisans and embroidery communities, ensuring that:<br>
+              all workers are treated with dignity and respect  -<br>
+              fair wages are paid  -<br>
+              safe and healthy working conditions are provided  -<br>
+              no child labor or forced labor is used  -<br>
+              traditional skills are valued, preserved, and passed down  -</p>
+            <p class="tight">we source our materials responsibly and strive to minimize waste, working toward a more sustainable and transparent supply chain. by choosing us, you’re supporting a business that values people, craft, and conscious fashion.</p>
           </div>
         </div>
       </div>
-
     </div>
   </section>
 @endsection

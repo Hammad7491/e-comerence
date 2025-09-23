@@ -145,3 +145,9 @@ Route::middleware('auth')->get('/my-orders', [\App\Http\Controllers\OrderHistory
 Route::get('/brand', function () {
     return view('frontend.brand');
 })->name('brand');
+
+
+
+Route::get('/contact-us', function () {
+    return view('frontend.contactus');
+})->name('contact');
