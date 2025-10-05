@@ -3,7 +3,18 @@
 @section('title', 'Product View')
 
 @section('styles')
+<!-- Load Manrope to match previous pages -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
+/* Global typography for this page */
+html, body{
+  font-family:"Manrope", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans";
+  color:#0f0f10;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+
 /* ============== PRODUCT VIEW — HERO (centered like reference) ============== */
 .pv-hero{
   background:#2a2a2c;
@@ -14,17 +25,17 @@
 }
 .pv-hero .fx{ position:relative; z-index:2; }
 .pv-eyebrow{
-  font:800 30px/1.2 "Inter",system-ui;
+  font:800 30px/1.2 "Manrope",system-ui;
   letter-spacing:.18em; text-transform:uppercase; margin-bottom:6px;
 }
 .pv-path{
-  color:#cfcfcf; font:600 18px/1.3 "Inter";
+  color:#cfcfcf; font:600 18px/1.3 "Manrope";
   letter-spacing:.12em; text-transform:uppercase;
 }
 /* Huge ghost word behind */
 .pv-ghost{
   position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-  font:900 clamp(120px,18vw,240px)/.9 "Inter",system-ui;
+  font:900 clamp(120px,18vw,240px)/.9 "Manrope",system-ui;
   color:#ffffff14; letter-spacing:.08em; z-index:1; pointer-events:none;
 }
 
@@ -52,32 +63,32 @@
 .pv-thumb img{ position:relative; z-index:1; width:100%; height:100%; object-fit:contain; }
 
 /* ============== RIGHT: DETAILS ============== */
-.pv-title{ font:700 16px/1.3 "Inter"; color:#2a2a2c; margin:4px 0 6px; }
-.pv-meta{ color:#6b6b6b; font:600 12px/1.5 "Inter"; margin-bottom:12px; }
-.pv-price{ float:right; color:#2a2a2c; font:800 12px "Inter"; }
+.pv-title{ font:700 16px/1.3 "Manrope"; color:#2a2a2c; margin:4px 0 6px; }
+.pv-meta{ color:#6b6b6b; font:600 12px/1.5 "Manrope"; margin-bottom:12px; }
+.pv-price{ float:right; color:#2a2a2c; font:800 12px "Manrope"; }
 .pv-old{ color:#8e8e8e; text-decoration:line-through; font-weight:700; margin-left:8px; }
-.pv-stock{ margin:6px 0 12px; font:700 11px/1 "Inter"; }
+.pv-stock{ margin:6px 0 12px; font:700 11px/1 "Manrope"; }
 .pv-stock.good{ color:#215e2a; }
 .pv-stock.bad{ color:#8b1a1a; }
 
 .pv-opts{ display:flex; gap:10px; align-items:center; margin:8px 0 12px; }
-.pv-size{ appearance:none; border:1px solid #c9b79d; background:#e9d2b7; padding:6px 10px; font:600 12px "Inter"; }
+.pv-size{ appearance:none; border:1px solid #c9b79d; background:#e9d2b7; padding:6px 10px; font:600 12px "Manrope"; }
 .pv-qty{ display:inline-flex; border:1px solid #c9b79d; }
 .pv-qty button{ width:28px; height:28px; font-weight:800; background:#e9d2b7; border:0; cursor:pointer; }
-.pv-qty input{ width:34px; height:28px; text-align:center; border:0; background:#e9d2b7; font:700 12px "Inter"; }
+.pv-qty input{ width:34px; height:28px; text-align:center; border:0; background:#e9d2b7; font:700 12px "Manrope"; }
 
 /* buttons look like reference: flat maroon */
 .pv-btn{ display:block; width:220px; height:34px; border:0; margin:8px 0; cursor:pointer;
-  font:800 11px/34px "Inter"; text-transform:uppercase; letter-spacing:.08em; text-align:left; padding:0 12px; }
+  font:800 11px/34px "Manrope"; text-transform:uppercase; letter-spacing:.08em; text-align:left; padding:0 12px; }
 .pv-btn--cart{ background:#6a0f2a; color:#fff; }
-.pv-btn--wish{ background:#4c1a25; color:#fff; }
+/* wishlist button removed */
 .pv-btn[disabled]{ opacity:.6; cursor:not-allowed; }
 
 /* details heading like reference */
 .pv-sec{ margin-top:16px; }
-.pv-sec h4{ font:900 28px/1 "Inter"; letter-spacing:.18em; color:#2a2a2c; margin:6px 0 10px; text-transform:uppercase; }
+.pv-sec h4{ font:900 28px/1 "Manrope"; letter-spacing:.18em; color:#2a2a2c; margin:6px 0 10px; text-transform:uppercase; }
 .pv-sec .bar{ width:32px; height:2px; background:#a91b28; margin:6px 0 14px; }
-.pv-spec{ font:600 12px/1.7 "Inter"; color:#2a2a2c; }
+.pv-spec{ font:600 12px/1.7 "Manrope"; color:#2a2a2c; }
 </style>
 @endsection
 
@@ -172,10 +183,9 @@
           <input type="hidden" name="qty" id="form-qty" value="1">
           <button type="submit" class="pv-btn pv-btn--cart" {{ $inStock ? '' : 'disabled' }}>Add To Cart</button>
         </form>
-        <button class="pv-btn pv-btn--wish" type="button">Add To Wishlist</button>
 
         {{-- Live total (qty × price) --}}
-        <div style="margin-top:6px;font:800 12px 'Inter';color:#2a2a2c">
+        <div style="margin-top:6px;font:800 12px 'Manrope';color:#2a2a2c">
           Total: <span id="pv-total">PKR {{ number_format($finalPriceRaw, 0) }}</span>
         </div>
 

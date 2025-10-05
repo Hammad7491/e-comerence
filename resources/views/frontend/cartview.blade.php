@@ -2,6 +2,8 @@
 @section('title','Your Cart')
 
 @section('styles')
+<!-- Load Manrope to match previous pages -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#0f0f10;
@@ -12,6 +14,16 @@
     --card:#ffffff;
     --sand:#e9d2b7;
   }
+
+  /* Global typography */
+  html, body{
+    font-family:"Manrope", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans";
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
+  }
+
   .fx{max-width:1100px;margin:0 auto;padding:0 18px}
 
   /* ===== HERO ===== */
@@ -21,11 +33,11 @@
     position:relative;overflow:hidden;text-align:center;
   }
   .cart-hero .eyebrow{
-    font:800 35px/1.1 "Inter",system-ui;letter-spacing:.18em;text-transform:uppercase;
+    font:800 35px/1.1 "Manrope",system-ui;letter-spacing:.18em;text-transform:uppercase;
   }
   .cart-hero .ghost{
     position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    font:900 clamp(100px,16vw,200px)/.9 "Inter";color:#ffffff12;letter-spacing:.08em;pointer-events:none
+    font:900 clamp(100px,16vw,200px)/.9 "Manrope";color:#ffffff12;letter-spacing:.08em;pointer-events:none
   }
 
   /* ===== WRAP ===== */
@@ -33,21 +45,21 @@
   .cart-inner{padding:22px}
   @media (max-width: 640px){ .cart-inner{padding:16px} }
 
-  .cart-title{font:800 22px/1.2 "Inter";margin:0 0 12px;color:var(--maroon)}
+  .cart-title{font:800 22px/1.2 "Manrope";margin:0 0 12px;color:var(--maroon)}
   .alert-ok{
     background:#e7f5ee;color:#0f5132;padding:10px 12px;border-radius:6px;margin-bottom:12px;
-    font:600 13px "Inter";
+    font:600 13px "Manrope";
   }
 
   /* ===== TABLE ===== */
   .cart-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:8px;overflow:hidden}
   .cart-table th, .cart-table td{padding:14px;vertical-align:middle}
   .cart-table thead th{
-    font:800 12px/1 "Inter";text-transform:uppercase;letter-spacing:.12em;
+    font:800 12px/1 "Manrope";text-transform:uppercase;letter-spacing:.12em;
     color:#374151;background:#fafafa;border-bottom:1px solid var(--line)
   }
   .cart-table tbody td{
-    border-bottom:1px solid #f3f4f6;font:600 14px/1.5 "Inter";color:#111827
+    border-bottom:1px solid #f3f4f6;font:600 14px/1.5 "Manrope";color:#111827
   }
   .cart-item{display:flex;align-items:center;gap:12px}
   .cart-thumb{width:52px;height:52px;border-radius:6px;object-fit:cover;background:#000}
@@ -61,9 +73,9 @@
     display:flex;align-items:center;justify-content:flex-end;gap:22px;padding:14px 0 0;
   }
   .cart-total .label{
-    font:800 13px "Inter";color:#111827;text-transform:uppercase;letter-spacing:.12em
+    font:800 13px "Manrope";color:#111827;text-transform:uppercase;letter-spacing:.12em
   }
-  .cart-total .amount{font:900 18px "Inter";color:#111827}
+  .cart-total .amount{font:900 18px "Manrope";color:#111827}
 
   /* ===== CTA ROW ===== */
   .cta-row{
@@ -72,7 +84,7 @@
   .btn{
     display:inline-flex;align-items:center;justify-content:center;gap:8px;
     padding:12px 18px;border-radius:6px;border:0;cursor:pointer;text-decoration:none;
-    font:800 12px/1 "Inter";text-transform:uppercase;letter-spacing:.12em;
+    font:800 12px/1 "Manrope";text-transform:uppercase;letter-spacing:.12em;
   }
   .btn-maroon{background:var(--maroon);color:#fff}
   .btn-maroon:hover{background:var(--maroon-dark)}
@@ -82,14 +94,14 @@
   /* Remove button (subtle outline) */
   .btn-outline{
     background:#fff;border:1px solid #e6d8cf;color:#5a2a2a;padding:10px 14px;border-radius:6px;
-    font:800 11px/1 "Inter";letter-spacing:.1em;text-transform:uppercase;
+    font:800 11px/1 "Manrope";letter-spacing:.1em;text-transform:uppercase;
   }
   .btn-outline:hover{background:#f8f3ef}
 
   /* ===== EMPTY STATE ===== */
   .empty{
     background:#fff;border:1px dashed #e5e7eb;border-radius:8px;padding:28px;text-align:center;color:var(--muted);
-    font:600 14px "Inter";
+    font:600 14px "Manrope";
   }
 
   /* ===== MOBILE (cards) ===== */
@@ -103,7 +115,7 @@
     .cart-row .meta{grid-column:1/-1;margin-top:-6px}
     .cell-label{
       display:block;           /* show only on mobile */
-      font:800 11px "Inter";letter-spacing:.1em;color:#6b7280;
+      font:800 11px "Manrope";letter-spacing:.1em;color:#6b7280;
       text-transform:uppercase;margin-bottom:4px
     }
   }

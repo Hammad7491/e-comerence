@@ -2,6 +2,8 @@
 @section('title','Checkout')
 
 @section('styles')
+<!-- Use Manrope everywhere (same as previous pages) -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#0f0f10;
@@ -12,13 +14,30 @@
     --card:#ffffff;
     --line:#ececec;
   }
+
+  /* Global typography */
+  html, body{
+    font-family:"Manrope", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans";
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
+  }
+
   .fx{max-width:1100px;margin:0 auto;padding:0 18px}
 
   /* ===== HERO (same as other pages) ===== */
-  .pv-hero{background:#2a2a2c;color:#fff;min-height:200px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;text-align:center}
+  .pv-hero{
+    background:#2a2a2c;color:#fff;min-height:200px;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;overflow:hidden;text-align:center
+  }
   .pv-hero .fx{position:relative;z-index:2}
-  .pv-eyebrow{font:800 35px/1.1 "Inter",system-ui;letter-spacing:.18em;text-transform:uppercase}
-  .pv-ghost{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:900 clamp(100px,16vw,200px)/.9 "Inter";color:#ffffff12;letter-spacing:.08em;pointer-events:none}
+  .pv-eyebrow{font:800 35px/1.1 "Manrope",system-ui;letter-spacing:.18em;text-transform:uppercase}
+  .pv-ghost{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font:900 clamp(100px,16vw,200px)/.9 "Manrope";color:#ffffff12;letter-spacing:.08em;pointer-events:none
+  }
 
   /* ===== WRAP ===== */
   .wrap{max-width:960px;margin:30px auto;background:var(--sand);border-radius:8px}
@@ -29,11 +48,14 @@
   /* ===== LEFT: FORM ===== */
   .card{background:var(--card);border-radius:8px;overflow:hidden}
   .body{padding:18px}
-  .section-title{font:900 42px/0.95 "Inter";letter-spacing:.04em;color:var(--maroon);margin:6px 0 16px}
+  .section-title{font:900 42px/0.95 "Manrope";letter-spacing:.04em;color:var(--maroon);margin:6px 0 16px}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .field{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
-  .label{font:800 11px/1 "Inter";color:#374151;text-transform:uppercase;letter-spacing:.14em}
-  .input, .textarea{width:100%;border:1px solid #e7e5e4;border-radius:6px;background:#fff;padding:10px 12px;font:600 14px/1.3 "Inter";color:#111827}
+  .label{font:800 11px/1 "Manrope";color:#374151;text-transform:uppercase;letter-spacing:.14em}
+  .input, .textarea{
+    width:100%;border:1px solid #e7e5e4;border-radius:6px;background:#fff;padding:10px 12px;
+    font:600 14px/1.3 "Manrope";color:#111827
+  }
   .textarea{min-height:88px;resize:vertical}
 
   /* ===== Radios row (FIXED) ===== */
@@ -44,26 +66,28 @@
   }
   .radio input{
     width:16px;height:16px;
-    /* force native radios to show even if a reset hides them */
     appearance:auto; -webkit-appearance:auto; -moz-appearance:auto;
     accent-color: var(--maroon);
     margin:0;
   }
-  .radio span{font:800 12px "Inter";letter-spacing:.08em;color:#111827}
+  .radio span{font:800 12px "Manrope";letter-spacing:.08em;color:#111827}
 
-  .help{color:var(--muted);font:600 13px;margin:6px 0 10px}
+  .help{color:var(--muted);font:600 13px/1.45 "Manrope";margin:6px 0 10px}
 
   .acct{border:1px dashed #e6d8cf;background:#fff;border-radius:8px;padding:12px;display:none}
   .acct.show{display:block}
-  .acct h5{margin:0 0 6px;font:800 13px "Inter";color:#374151;text-transform:uppercase;letter-spacing:.12em}
-  .small{color:#6b7280;font:600 12px}
+  .acct h5{margin:0 0 6px;font:800 13px "Manrope";color:#374151;text-transform:uppercase;letter-spacing:.12em}
+  .small{color:#6b7280;font:600 12px/1.4 "Manrope"}
 
   .total-row{display:flex;justify-content:flex-end;gap:10px;margin-top:10px}
-  .total-row .lbl{font:800 12px "Inter";text-transform:uppercase;letter-spacing:.12em;color:#111827}
-  .total-row .amt{font:900 16px "Inter";color:#111827}
+  .total-row .lbl{font:800 12px "Manrope";text-transform:uppercase;letter-spacing:.12em;color:#111827}
+  .total-row .amt{font:900 16px "Manrope";color:#111827}
 
   .actions{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap}
-  .btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 16px;border-radius:6px;border:0;cursor:pointer;font:800 12px "Inter";text-transform:uppercase;letter-spacing:.12em;text-decoration:none}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;padding:11px 16px;border-radius:6px;border:0;cursor:pointer;
+    font:800 12px "Manrope";text-transform:uppercase;letter-spacing:.12em;text-decoration:none
+  }
   .btn-ghost{background:#fff;border:1px solid #e7e7e7;color:#111827}
   .btn-ghost:hover{background:#f7f7f7}
   .btn-maroon{background:var(--maroon);color:#fff}
@@ -72,16 +96,16 @@
   /* ===== RIGHT: SUMMARY ===== */
   .sum{background:#fff;border-radius:8px;overflow:hidden}
   .sum .head{padding:14px 16px;border-bottom:1px solid #f0ebe4}
-  .sum .head h3{margin:0;font:900 42px/1 "Inter";letter-spacing:.04em;color:var(--maroon);white-space:nowrap}
+  .sum .head h3{margin:0;font:900 42px/1 "Manrope";letter-spacing:.04em;color:var(--maroon);white-space:nowrap}
   .sum .content{padding:14px 16px}
   .item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;margin-bottom:10px}
   .thumb{width:42px;height:42px;border-radius:6px;object-fit:cover;background:#000}
-  .name{font:700 13px "Inter";color:#111827}
-  .sub{color:#6b7280;font:600 12px}
-  .price{font:800 12px "Inter";color:#111827;white-space:nowrap}
+  .name{font:700 13px "Manrope";color:#111827}
+  .sub{color:#6b7280;font:600 12px/1.3 "Manrope"}
+  .price{font:800 12px "Manrope";color:#111827;white-space:nowrap}
   .grand{margin-top:10px;padding-top:10px;border-top:1px dashed #eee;display:flex;justify-content:space-between;align-items:center}
-  .grand .lbl{font:800 12px "Inter"}
-  .grand .amt{font:900 14px "Inter"}
+  .grand .lbl{font:800 12px "Manrope"}
+  .grand .amt{font:900 14px "Manrope"}
 </style>
 @endsection
 
