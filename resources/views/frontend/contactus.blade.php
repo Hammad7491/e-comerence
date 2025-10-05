@@ -3,11 +3,24 @@
 
 @section('styles')
 <style>
+  /* Load Manrope to match previous pages */
+  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
   :root{
     --ink:#0f0f10;
     --muted:#656b74;
     --ring:#e9e7e2;
   }
+
+  /* Global typography */
+  html, body{
+    font-family:"Manrope", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans";
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
+  }
+
   .fx{max-width:1180px;margin:0 auto;padding:0 18px}
 
   /* ===== HERO (same as Brand) ===== */
@@ -23,7 +36,7 @@
     text-align:center;
   }
   .brand-hero .eyebrow{
-    font:800 35px/1.1 "Inter",system-ui;
+    font:800 35px/1.1 "Manrope",system-ui;
     letter-spacing:.18em;
     text-transform:uppercase;
   }
@@ -33,7 +46,7 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    font:900 clamp(100px,16vw,200px)/.9 "Inter";
+    font:900 clamp(100px,16vw,200px)/.9 "Manrope";
     color:#ffffff12;
     letter-spacing:.08em;
     pointer-events:none;
@@ -53,7 +66,7 @@
   }
   .card .hd{
     padding:18px 18px 0;
-    font:800 12px/1 "Inter";
+    font:800 12px/1 "Manrope";
     letter-spacing:.18em;
     color:#79808a;
     text-transform:uppercase;
@@ -66,7 +79,7 @@
 
   label{
     display:block;
-    font:600 12px/1.2 "Inter";
+    font:600 12px/1.2 "Manrope";
     color:#434a55;
     margin-bottom:8px;
     letter-spacing:.02em
@@ -76,7 +89,7 @@
     border:1px solid var(--ring);
     border-radius:8px;
     padding:12px 12px;
-    font:600 14px/1.4 "Inter";
+    font:600 14px/1.4 "Manrope";
     color:#111;
     background:#fff;
     outline:none;
@@ -87,15 +100,15 @@
     border-color:#10a37f;
   }
 
-  .muted{color:#6b7280;font:600 13px/1.6 "Inter"}
+  .muted{color:#6b7280;font:600 13px/1.6 "Manrope"}
   .btn{
     appearance:none;border:0;border-radius:10px;padding:12px 16px;
-    font:800 13px/1 "Inter";letter-spacing:.06em;text-transform:uppercase;
+    font:800 13px/1 "Manrope";letter-spacing:.06em;text-transform:uppercase;
     background:#111;color:#fff;cursor:pointer
   }
   .btn[disabled]{opacity:.6;cursor:not-allowed}
 
-  .note{font:600 12px/1.5 "Inter";color:#6b7280}
+  .note{font:600 12px/1.5 "Manrope";color:#6b7280}
 
   .alert{
     border-radius:10px;
@@ -103,12 +116,12 @@
     background:#f0fdf4;
     border:1px solid #dcfce7;
     color:#14532d;
-    font:600 13px/1.5 "Inter";
+    font:600 13px/1.5 "Manrope";
     margin-bottom:16px;
   }
   .error{
     margin-top:6px;
-    font:600 12px/1.4 "Inter";
+    font:600 12px/1.4 "Manrope";
     color:#b91c1c;
   }
 
@@ -140,19 +153,19 @@
               We’d love to hear from you. Whether it’s a custom request, order help, or a partnership idea — drop us a message.
             </p>
             <div>
-              <div style="font:700 14px/1.4 Inter;color:#111;margin-bottom:6px">Email</div>
-              <a href="mailto:hello@guleythreads.com" style="font:600 14px/1.6 Inter;color:#0a0a0a">hello@guleythreads.com</a>
+              <div style="font:700 14px/1.4 Manrope;color:#111;margin-bottom:6px">Email</div>
+              <a href="mailto:hello@guleythreads.com" style="font:600 14px/1.6 Manrope;color:#0a0a0a">hello@guleythreads.com</a>
             </div>
             <div>
-              <div style="font:700 14px/1.4 Inter;color:#111;margin-bottom:6px">Phone / WhatsApp</div>
-              <a href="tel:+92XXXXXXXXXX" style="font:600 14px/1.6 Inter;color:#0a0a0a">+92 XX XXX XXXX</a>
+              <div style="font:700 14px/1.4 Manrope;color:#111;margin-bottom:6px">Phone / WhatsApp</div>
+              <a href="tel:+92XXXXXXXXXX" style="font:600 14px/1.6 Manrope;color:#0a0a0a">+92 XX XXX XXXX</a>
             </div>
             <div>
-              <div style="font:700 14px/1.4 Inter;color:#111;margin-bottom:6px">Hours</div>
+              <div style="font:700 14px/1.4 Manrope;color:#111;margin-bottom:6px">Hours</div>
               <p class="muted" style="margin:0">Mon–Sat, 10:00–18:00 (PKT)</p>
             </div>
             <div>
-              <div style="font:700 14px/1.4 Inter;color:#111;margin-bottom:6px">Studio</div>
+              <div style="font:700 14px/1.4 Manrope;color:#111;margin-bottom:6px">Studio</div>
               <p class="muted" style="margin:0">
                 Hand-Embroidery Studio, Karachi, Pakistan
               </p>
@@ -168,7 +181,7 @@
               <div class="alert">{{ session('status') }}</div>
             @endif
 
-            <form method="POST" action="" novalidate>
+            <form method="" action="" novalidate>
               @csrf
 
               <!-- honeypot (simple anti-bot) -->

@@ -2,7 +2,18 @@
 @section('title','The Brand')
 
 @section('styles')
+<!-- Use Manrope everywhere on this page (same as previous change) -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+  /* Global typography */
+  html, body{
+    font-family:"Manrope", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+    color:#0f0f10;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
+  }
+
   :root{
     --ink:#0f0f10;
     --muted:#656b74;
@@ -23,7 +34,7 @@
     text-align:center;
   }
   .brand-hero .eyebrow{
-    font:800 35px/1.1 "Inter",system-ui;
+    font:800 35px/1.1 "Manrope",system-ui;
     letter-spacing:.18em;
     text-transform:uppercase;
   }
@@ -33,7 +44,7 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    font:900 clamp(100px,16vw,200px)/.9 "Inter";
+    font:900 clamp(100px,16vw,200px)/.9 "Manrope";
     color:#ffffff12;
     letter-spacing:.08em;
     pointer-events:none;
@@ -53,7 +64,7 @@
   .img-frame img{display:block;width:100%;height:auto}
 
   .h-eyebrow{
-    font:800 20px/1 "Inter";
+    font:800 20px/1 "Manrope";
     letter-spacing:.18em;
     text-transform:uppercase;
     color:#7a808a;
@@ -62,7 +73,7 @@
   .story p,
   .values p,
   .ethics p{
-    font:600 14px/1.65 "Inter";
+    font:600 14px/1.65 "Manrope";
     color:#2e3136;
     margin:.45rem 0;
   }
@@ -70,7 +81,7 @@
   .ethics h4{
     text-align:center;
     margin:0 0 10px;
-    font:800 12px/1 "Inter";
+    font:800 12px/1 "Manrope";
     letter-spacing:.18em;
     color:#79808a;
     text-transform:uppercase;
