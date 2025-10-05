@@ -5,7 +5,7 @@
       <!-- Brand / Left column -->
       <div class="col-lg-3 col-md-6">
         <div class="d-flex align-items-start mb-2">
-          <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="gt-logo me-2">
+          <img src="{{ asset('assets/images/guley.jpg') }}" alt="Logo" class="gt-logo me-2">
           <div class="gt-brand">
             <div class="gt-brand-line">Guley</div>
             <div class="gt-brand-line">Threads</div>

@@ -45,12 +45,7 @@
                 </ul>
             </li>
 
-            <li>
-                <a href="email.html">
-                    <iconify-icon icon="mage:email" class="menu-icon"></iconify-icon>
-                    <span>Email</span>
-                </a>
-            </li>
+            
 
             <li class="sidebar-menu-group-title">Catalog</li>
 
