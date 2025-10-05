@@ -175,70 +175,117 @@ body{background:var(--bg)}
 
 <script>
 /**
- * Preview-only (no mutation of input.files, no DataTransfer).
- * - Shows up to 3 new previews.
- * - Never clears or rewrites the input.
- * - Never blocks form submission.
- * - Counter = keptExisting + selected new (min(3)).
+ * Accumulative previews + input files.
+ * - Selecting more files ADDS to previous selection (until MAX).
+ * - Shows all selected previews (1st, then 1st+2nd, then 1st+2nd+3rd).
+ * - Keeps in sync with <input> via DataTransfer so all chosen files upload.
+ * - Respects existing images kept/removed when computing remaining slots.
  */
-(function(){
+(function () {
   const MAX = 3;
+
   const form    = document.getElementById('productForm');
   const input   = document.getElementById('imagesInput');
   const preview = document.getElementById('previewContainer');
   const msg     = document.getElementById('fxMsg');
   const counter = document.getElementById('fxCount');
 
-  if(!form || !input || !preview) return;
+  if (!form || !input || !preview) return;
+
+  // Keep an internal list of newly added files (persist across changes)
+  let selectedNewFiles = [];
 
   const existingBoxes = () => Array.from(document.querySelectorAll('.fx-exist'));
-  const keptExisting  = () => existingBoxes().reduce((n, cb)=> n + (cb.checked ? 0 : 1), 0);
+  const keptExisting  = () => existingBoxes().reduce((n, cb) => n + (cb.checked ? 0 : 1), 0);
 
-  function updateCounter(selectedNewCount){
-    const total = keptExisting() + selectedNewCount;
+  function syncInputFiles() {
+    const dt = new DataTransfer();
+    selectedNewFiles.forEach(f => dt.items.add(f));
+    input.files = dt.files; // update the real input for submission
+  }
+
+  function updateCounter() {
+    const total = keptExisting() + selectedNewFiles.length;
     counter.textContent = `(${total}/${MAX})`;
     msg.textContent = total > MAX ? 'Max 3 images total (existing + new).' : '';
   }
 
-  function renderPreviews(files){
-    preview.innerHTML = ''; // only affects previews, not the input
-    let remaining = Math.max(0, MAX - keptExisting());
-    const take = Math.min(remaining, files.length);
-
-    for(let i=0; i<take; i++){
-      const file = files[i];
-      if(!file || !file.type || !file.type.startsWith('image/')) continue;
-
+  function renderPreviews() {
+    // Re-render ALL new previews (do not clear existing section)
+    preview.innerHTML = '';
+    selectedNewFiles.forEach((file, idx) => {
       const card = document.createElement('div');
       card.className = 'fx-prev';
-      card.dataset.new = '1';
 
       const img = document.createElement('img');
       card.appendChild(img);
 
+      const rm = document.createElement('button');
+      rm.type = 'button';
+      rm.className = 'fx-remove';
+      rm.textContent = 'Remove';
+      rm.addEventListener('click', () => {
+        // Remove by index and refresh everything
+        selectedNewFiles.splice(idx, 1);
+        syncInputFiles();
+        renderPreviews();
+        updateCounter();
+      });
+      card.appendChild(rm);
+
       const reader = new FileReader();
-      reader.onload = e => img.src = e.target.result;
+      reader.onload = e => (img.src = e.target.result);
       reader.readAsDataURL(file);
 
       preview.appendChild(card);
-    }
-
-    updateCounter(take);
+    });
   }
 
-  existingBoxes().forEach(cb => cb.addEventListener('change', () => {
-    const files = input.files || [];
-    const remaining = Math.max(0, MAX - keptExisting());
-    const selectedNew = Math.min(remaining, files.length);
-    updateCounter(selectedNew);
-  }));
+  function remainingSlots() {
+    return Math.max(0, MAX - keptExisting() - selectedNewFiles.length);
+  }
+
+  // If user toggles remove on existing images, recalc remaining and enforce MAX
+  existingBoxes().forEach(cb =>
+    cb.addEventListener('change', () => {
+      // If we now exceed MAX (because we re-kept an existing), trim selectedNewFiles
+      while (keptExisting() + selectedNewFiles.length > MAX) {
+        selectedNewFiles.pop();
+      }
+      syncInputFiles();
+      renderPreviews();
+      updateCounter();
+    })
+  );
 
   input.addEventListener('change', e => {
     const files = Array.from(e.target.files || []);
-    renderPreviews(files);
+    let canTake = remainingSlots();
+
+    for (const f of files) {
+      if (canTake <= 0) break;
+      if (!f || !f.type || !f.type.startsWith('image/')) continue;
+
+      // Avoid duplicate by name+size+lastModified (simple heuristic)
+      const dup = selectedNewFiles.some(x =>
+        x.name === f.name && x.size === f.size && x.lastModified === f.lastModified
+      );
+      if (dup) continue;
+
+      selectedNewFiles.push(f);
+      canTake--;
+    }
+
+    // After consuming, reset the chooser so the same file can be picked again later if removed
+    e.target.value = '';
+
+    syncInputFiles();
+    renderPreviews();
+    updateCounter();
   });
 
-  updateCounter(0);
+  // init
+  updateCounter();
 })();
 </script>
 
