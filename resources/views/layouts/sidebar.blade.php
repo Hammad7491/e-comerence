@@ -12,17 +12,13 @@
 
     <div class="sidebar-menu-area">
         <ul class="sidebar-menu" id="sidebar-menu">
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="solar:home-smile-angle-outline" class="menu-icon"></iconify-icon>
-                    <span>Dashboard</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="index.html"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> AI</a>
-                    </li>
-                </ul>
-            </li>
+            <li>
+    <a href="{{ route('admin.dashboard') }}">
+        <iconify-icon icon="solar:home-smile-angle-outline" class="menu-icon"></iconify-icon>
+        <span>Dashboard</span>
+    </a>
+</li>
+
 
             <li class="sidebar-menu-group-title">Users</li>
 

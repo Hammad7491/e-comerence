@@ -151,3 +151,8 @@ Route::get('/brand', function () {
 Route::get('/contact-us', function () {
     return view('frontend.contactus');
 })->name('contact');
+
+
+
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');});
