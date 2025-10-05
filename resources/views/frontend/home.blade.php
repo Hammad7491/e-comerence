@@ -3,17 +3,15 @@
 @section('title', 'Home')
 
 @section('styles')
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Manrope:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <style>
         /* ===== THEME ===== */
         :root {
             --ink: #0f0f10;
             --muted: #6b7280;
-            --rose: #c96a87;
-            /* script headline */
-            --gold: #8a6516;
-            /* hero button */
+            --rose: #c96a87; /* script headline */
+            --gold: #8a6516; /* hero button */
             --card: #ffffff;
             --line: #ececec;
 
@@ -21,11 +19,18 @@
             --wn-title: #0f0f10;
             --wn-tab: #9b9b9b;
             --wn-tab-active: #6a0f2a;
-            --wn-maroon: #5b112d;
-            /* deep maroon circle */
-            --wn-gold: #c9ab76;
-            /* thin outer ring */
+            --wn-maroon: #5b112d; /* deep maroon circle */
+            --wn-gold: #c9ab76;  /* thin outer ring */
             --hover-maroon: #7c1130;
+        }
+
+        /* Global type: switch all text to Manrope (hero h1 keeps Great Vibes) */
+        html, body {
+            font-family: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+            color: var(--ink);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
         }
 
         .fx-container {
@@ -40,7 +45,7 @@
         }
 
         .hero h1 {
-            font-family: "Great Vibes", cursive;
+            font-family: "Great Vibes", cursive; /* DO NOT CHANGE per request */
             font-size: 74px;
             line-height: 1.05;
             color: var(--rose);
@@ -50,7 +55,7 @@
         }
 
         .hero p {
-            font: 400 18px/1.8 "Inter", system-ui;
+            font: 400 18px/1.8 "Manrope", system-ui;
             color: #4a5568;
             max-width: 760px
         }
@@ -88,7 +93,7 @@
         }
 
         .wn-title {
-            font: 800 64px/0.98 "Inter", system-ui;
+            font: 800 64px/0.98 "Manrope", system-ui;
             color: var(--wn-title);
             letter-spacing: .02em;
             margin: 8px 0 6px;
@@ -120,7 +125,7 @@
         }
 
         .wn-label {
-            font: 800 10px/1.12 "Inter";
+            font: 800 10px/1.12 "Manrope";
             color: #601231;
             text-transform: uppercase
         }
@@ -132,7 +137,7 @@
         }
 
         .wn-tab {
-            font: 800 11px/1 "Inter";
+            font: 800 11px/1 "Manrope";
             text-transform: uppercase;
             color: var(--wn-tab);
             text-decoration: none
@@ -231,7 +236,7 @@
         }
 
         .card .title {
-            font: 600 13px/1.2 "Inter";
+            font: 600 13px/1.2 "Manrope";
             color: #111827;
             margin: 2px 0 8px
         }
@@ -257,7 +262,7 @@
 
         .card .meta {
             color: #6b7280;
-            font: 600 11px/1 "Inter"
+            font: 600 11px/1 "Manrope"
         }
 
         /* make whole card clickable to product view */
@@ -291,13 +296,13 @@
   /* ===== HERO ===== */
   .hero{padding:72px 0 46px}
   .hero h1{
-    font-family:"Great Vibes", cursive;
+    font-family:"Great Vibes", cursive; /* keep */
     font-size:74px; line-height:1.05;
     color:var(--rose); letter-spacing:.5px;
     text-shadow:0 3px 0 rgba(0,0,0,.05);
     margin:0 0 26px;
   }
-  .hero p{font:400 18px/1.8 "Inter", system-ui; color:#4a5568; max-width:760px}
+  .hero p{font:400 18px/1.8 "Manrope", system-ui; color:#4a5568; max-width:760px}
   .hero .cta{
     display:inline-flex; align-items:center; justify-content:center;
     padding:14px 28px; border-radius:4px; text-decoration:none;
@@ -311,7 +316,7 @@
   .wn{padding:8px 0 22px}
   .wn-head{display:flex; align-items:flex-start; gap:80px}
   .wn-title{
-    font:800 64px/0.98 "Inter", system-ui;
+    font:800 64px/0.98 "Manrope", system-ui;
     color:var(--wn-title); letter-spacing:.02em;
     margin:8px 0 6px; min-width:280px; max-width:320px;
   }
@@ -323,10 +328,10 @@
     background:radial-gradient(circle at 50% 50%, #651536 0%, var(--wn-maroon) 55%, #4a0d22 100%);
     box-shadow:0 0 0 3px #eee, 0 0 0 5px var(--wn-gold);
   }
-  .wn-label{font:800 10px/1.12 "Inter"; color:#601231; text-transform:uppercase}
+  .wn-label{font:800 10px/1.12 "Manrope"; color:#601231; text-transform:uppercase}
 
   .wn-tabs{display:flex; gap:26px; margin:18px 0 16px}
-  .wn-tab{font:800 11px/1 "Inter"; text-transform:uppercase; color:var(--wn-tab); text-decoration:none}
+  .wn-tab{font:800 11px/1 "Manrope"; text-transform:uppercase; color:var(--wn-tab); text-decoration:none}
   .wn-tab.is-active{color:var(--wn-tab-active)}
 
   /* ===== GRID ===== */
@@ -422,11 +427,11 @@
   }
 
   .card .body{padding:10px 12px 12px}
-  .card .title{font:600 13px/1.2 "Inter"; color:#111827; margin:2px 0 8px}
+  .card .title{font:600 13px/1.2 "Manrope"; color:#111827; margin:2px 0 8px}
   .card .price{display:flex; align-items:center; gap:8px; margin-bottom:4px}
   .card .price .now{color:#7c1130; font-weight:800; font-size:14px}
   .card .price .old{color:#9aa4b2; text-decoration:line-through; font-size:12px}
-  .card .meta{color:#6b7280; font:600 11px/1 "Inter"}
+  .card .meta{color:#6b7280; font:600 11px/1 "Manrope"}
 </style>
 @endsection
 
