@@ -11,7 +11,18 @@
           <span class="sep">|</span>
           <a href="{{ route('loginform') }}">Sign In</a>
         @else
-          <!-- User dropdown (name only, no “Welcome”) -->
+          <!-- Admin: Go to Dashboard button -->
+          @if(auth()->check() && ((auth()->user()->role ?? null) === 'admin' || (auth()->user()->is_admin ?? false)))
+            <a href="{{ route('admin.dashboard') }}" class="dash-btn" aria-label="Go to Dashboard">
+              <svg class="dash-ico" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 12l9-9 9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 21V9h6v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Dashboard</span>
+            </a>
+          @endif
+
+          <!-- User dropdown -->
           <div class="user-menu">
             <button class="user-btn" type="button" aria-haspopup="menu" aria-expanded="false" id="userMenuButton">
               <span class="user-name">{{ Auth::user()->name }}</span>
@@ -93,7 +104,7 @@
   --gray-700:#444;
   --txt:#7b7b7b;
   --ink:#111;
-  --brand-pill:#6b1030;
+  --brand-pill:#6b1030;   /* maroon theme */
   --container:1220px;
   --drop-bg:#1f2937;
   --drop-ring:#334155;
@@ -116,6 +127,17 @@
 .topbar .sep{opacity:.6; margin:0 6px;}
 .topbar-left{letter-spacing:.2px;}
 .topbar-right{display:flex; align-items:center; gap:8px; position:relative; flex-wrap:wrap}
+
+/* Go to Dashboard button: MAROON, HIGH CONTRAST */
+.dash-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--brand-pill); color:#ffffff;
+  border:1px solid #8f1a44; padding:6px 12px; border-radius:999px;
+  font-weight:800; letter-spacing:.02em; text-decoration:none;
+  box-shadow:0 2px 8px rgba(0,0,0,.18);
+}
+.dash-btn:hover{filter:brightness(1.06)}
+.dash-ico{width:14px;height:14px; color:currentColor}
 
 /* User menu */
 .user-menu{position:relative}
@@ -223,7 +245,6 @@
   .nav{grid-area:nav}
   .search{grid-area:search; justify-content:flex-start}
 
-  /* collapse nav into a vertical drawer */
   .nav ul{
     flex-direction:column; gap:10px;
     border-top:1px solid #e7e7e7; padding-top:10px; display:none;
@@ -231,18 +252,15 @@
   }
   .nav.open ul{display:flex;}
 
-  /* brand text smaller & allow truncation */
   .brand-text span{font-size:20px}
   .brand-text{max-width:60vw; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 
-  /* MOBILE SEARCH = SMALL */
-  .search input{
-    width:140px;            /* <-- small on mobile per request */
-    height:28px;
-  }
+  .search input{width:140px; height:28px}
+
+  /* compact topbar button on mobile */
+  .dash-btn{padding:5px 10px; font-size:12px}
 }
 
-/* Extra small phones */
 @media (max-width:400px){
   .brand .logo img{width:42px;height:42px}
   .brand-text span{font-size:18px}
