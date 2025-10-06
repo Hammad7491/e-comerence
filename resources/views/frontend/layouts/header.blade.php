@@ -56,8 +56,7 @@
     <div class="container">
       <div class="brand">
         <a class="logo" href="{{ route('home') }}">
-       <img src="{{ asset('assets/images/guley.jpg') }}" alt="Guley Threads" />
-
+          <img src="{{ asset('assets/images/guley.jpg') }}" alt="Guley Threads" />
         </a>
         <a class="brand-text" href="{{ route('home') }}">
           <span>Guley</span>
@@ -75,13 +74,12 @@
         <ul>
           <li><a href="{{ route('home') }}">HOME</a></li>
           <li><a href="{{ route('brand') }}">THE BRAND</a></li>
-         
           <li><a href="{{ route('contact') }}">CONTACT US</a></li>
         </ul>
       </nav>
 
-      <form class="search" action="/search" method="GET">
-        <input type="search" name="q" placeholder="Search..." />
+      <form class="search" action="/search" method="GET" role="search">
+        <input type="search" name="q" placeholder="Search..." aria-label="Search"/>
       </form>
     </div>
   </div>
@@ -102,16 +100,22 @@
   --drop-txt:#e5e7eb;
 }
 .site-header{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,sans-serif;}
-.container{max-width:var(--container);margin:0 auto;padding:0 16px;}
+.container{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:0 clamp(12px,3.2vw,16px);
+  padding-left:max(clamp(12px,3.2vw,16px), env(safe-area-inset-left));
+  padding-right:max(clamp(12px,3.2vw,16px), env(safe-area-inset-right));
+}
 
 /* ---- Topbar ---- */
 .topbar{background:var(--gray-900); color:#cfcfcf; font-size:12px;}
-.topbar .container{display:flex; align-items:center; justify-content:space-between; height:28px;}
+.topbar .container{display:flex; align-items:center; justify-content:space-between; min-height:28px; gap:8px;}
 .topbar a{color:#e2e2e2; text-decoration:none;}
 .topbar a:hover{color:#fff;}
-.topbar .sep{opacity:.6; margin:0 8px;}
+.topbar .sep{opacity:.6; margin:0 6px;}
 .topbar-left{letter-spacing:.2px;}
-.topbar-right{display:flex; align-items:center; gap:8px; position:relative}
+.topbar-right{display:flex; align-items:center; gap:8px; position:relative; flex-wrap:wrap}
 
 /* User menu */
 .user-menu{position:relative}
@@ -143,7 +147,7 @@
   display:inline-flex; align-items:center; gap:6px;
   background:var(--brand-pill); color:#fff; padding:6px 10px;
   border-top-left-radius:4px; border-top-right-radius:4px;
-  position:relative; margin-left:8px; text-decoration:none;
+  position:relative; margin-left:8px; text-decoration:none; white-space:nowrap;
 }
 .cart-pill .cart-icon{line-height:1; transform:translateY(-.5px);}
 .cart-pill .caret{
@@ -154,54 +158,57 @@
 /* ---- Main header ---- */
 .main-header{background:#f6f6f6;}
 .main-header .container{
-  /* single line, perfectly centered nav row */
   display:grid;
   grid-template-columns:auto 1fr auto; /* brand | nav | search */
   align-items:center;
   gap:24px;
-  padding:18px 16px;
+  padding:14px clamp(12px,3.2vw,16px);
 }
 
 /* brand (logo + stacked name) */
-.brand{display:flex; align-items:center; gap:16px;}
+.brand{display:flex; align-items:center; gap:12px; min-width:0;}
 .brand .logo img{width:56px; height:56px; object-fit:cover; border-radius:6px; display:block;}
 .brand-text{display:flex; flex-direction:column; text-decoration:none; line-height:1.05;}
-.brand-text span{font-weight:800; color:#b0b0b0; font-size:28px; letter-spacing:.02em;}
-.brand-text span + span{margin-top:2px;}
+.brand-text span{font-weight:800; color:#b0b0b0; font-size:26px; letter-spacing:.02em;}
+.brand-text span + span{margin-top:1px;}
 
 /* nav (centered) */
 .nav{display:flex; justify-content:center;}
 .nav ul{
   display:flex; align-items:center; justify-content:center;
-  gap:36px; list-style:none; margin:0; padding:0;
+  gap:32px; list-style:none; margin:0; padding:0;
 }
 .nav li{display:inline-flex}
-.nav a{color:var(--ink); text-decoration:none; font-weight:600; font-size:12.5px; letter-spacing:.12em;}
-.nav a:hover{opacity:.7;}
+.nav a{color:var(--ink); text-decoration:none; font-weight:700; font-size:12px; letter-spacing:.12em;}
+.nav a:hover{opacity:.75;}
 
 /* search */
-.search{display:flex; justify-content:flex-end}
+.search{display:flex; justify-content:flex-end; min-width:0}
 .search input{
-  width:190px; height:26px; border:1px solid #e5e5e5; border-radius:3px;
+  width:210px; height:28px; border:1px solid #e5e5e5; border-radius:4px;
   padding:0 8px; font-size:12px; color:#333; background:#fff;
 }
 
 /* mobile toggle (hidden desktop) */
 .nav-toggle{display:none; background:none; border:0; padding:6px; margin-left:auto; cursor:pointer}
-.nav-toggle span{display:block; width:22px; height:2px; background:#222; margin:4px 0;}
+.nav-toggle span{display:block; width:22px; height:2px; background:#222; margin:4px 0; border-radius:1px}
 
 /* ---- Responsive ---- */
-@media (max-width:1024px){
-  .main-header .container{grid-template-columns:auto auto auto; gap:16px;}
-  .nav ul{gap:22px;}
+@media (max-width:1100px){
+  .nav ul{gap:24px;}
+  .brand .logo img{width:52px;height:52px}
+  .brand-text span{font-size:24px}
+  .search input{width:190px}
 }
 
 @media (max-width:860px){
-  .brand .logo img{width:48px;height:48px}
-  .brand-text span{font-size:24px}
-  .search input{width:160px}
+  .main-header .container{gap:16px}
+  .brand .logo img{width:46px;height:46px}
+  .brand-text span{font-size:22px}
+  .search input{width:170px}
 }
 
+/* Mobile layout */
 @media (max-width:720px){
   .main-header .container{
     grid-template-columns:1fr auto;
@@ -209,24 +216,40 @@
       "brand toggle"
       "nav   nav"
       "search search";
-    row-gap:10px;
+    row-gap:8px;
   }
   .brand{grid-area:brand}
   .nav-toggle{display:block; grid-area:toggle}
   .nav{grid-area:nav}
-  .search{grid-area:search}
+  .search{grid-area:search; justify-content:flex-start}
+
+  /* collapse nav into a vertical drawer */
   .nav ul{
     flex-direction:column; gap:10px;
     border-top:1px solid #e7e7e7; padding-top:10px; display:none;
+    align-items:flex-start;
   }
   .nav.open ul{display:flex;}
-  .search{display:flex; justify-content:flex-end}
-  .search input{width:100%}
+
+  /* brand text smaller & allow truncation */
+  .brand-text span{font-size:20px}
+  .brand-text{max-width:60vw; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+
+  /* MOBILE SEARCH = SMALL */
+  .search input{
+    width:140px;            /* <-- small on mobile per request */
+    height:28px;
+  }
 }
 
+/* Extra small phones */
 @media (max-width:400px){
-  .brand-text span{font-size:20px}
-  .topbar .container{padding-inline:10px}
+  .brand .logo img{width:42px;height:42px}
+  .brand-text span{font-size:18px}
+  .topbar .container{gap:6px}
+  .topbar .sep{margin:0 4px}
+  .nav a{font-size:11px}
+  .search input{width:130px}
 }
 </style>
 
