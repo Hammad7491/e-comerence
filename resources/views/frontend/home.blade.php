@@ -41,30 +41,32 @@
 
         /* ===== HERO ===== */
         .hero {
-            padding: 72px 0 46px
+            padding: clamp(48px, 10vw, 72px) 0 clamp(28px, 6vw, 46px);
+            text-align: center;
         }
 
         .hero h1 {
             font-family: "Great Vibes", cursive; /* DO NOT CHANGE per request */
-            font-size: 74px;
-            line-height: 1.05;
+            font-size: clamp(42px, 8vw, 74px);
+            line-height: 1.08;
             color: var(--rose);
             letter-spacing: .5px;
             text-shadow: 0 3px 0 rgba(0, 0, 0, .05);
-            margin: 0 0 26px;
+            margin: 0 0 18px;
         }
 
         .hero p {
-            font: 400 18px/1.8 "Manrope", system-ui;
+            font: 400 clamp(14px, 2.2vw, 18px)/1.8 "Manrope", system-ui;
             color: #4a5568;
-            max-width: 760px
+            max-width: 760px;
+            margin: 0 auto;
         }
 
         .hero .cta {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 14px 28px;
+            padding: 12px 24px;
             border-radius: 4px;
             text-decoration: none;
             background: var(--gold);
@@ -72,7 +74,7 @@
             letter-spacing: .12em;
             font-weight: 700;
             text-transform: uppercase;
-            margin-top: 18px
+            margin-top: 16px
         }
 
         .fade-hr {
@@ -93,7 +95,7 @@
         }
 
         .wn-title {
-            font: 800 64px/0.98 "Manrope", system-ui;
+            font: 800 clamp(34px, 6.4vw, 64px)/0.98 "Manrope", system-ui;
             color: var(--wn-title);
             letter-spacing: .02em;
             margin: 8px 0 6px;
@@ -160,10 +162,23 @@
             }
         }
 
+        /* UPDATED: 2 cards per row on mobile */
         @media (max-width: 640px) {
             .grid {
-                grid-template-columns: 1fr
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
             }
+        }
+
+        /* Mobile layout fixes for header block */
+        @media (max-width: 900px) {
+            .wn-head {flex-direction: column; gap: 24px; align-items: center;}
+            .wn-title {min-width: 0; max-width: none; text-align: center;}
+            .wn-circles {gap: 20px; justify-content: center; flex-wrap: wrap;}
+            .wn-chip {width: 100px; gap: 8px}
+            .wn-circle {width: 88px; height: 88px}
+            .wn-label {font-size: 9px}
+            .wn-tabs {justify-content: center}
         }
 
         /* ===== CARD (smaller) ===== */
@@ -269,6 +284,16 @@
         .card a.card-link{
             position:absolute; inset:0; z-index:10; text-indent:-9999px;
         }
+
+        /* Tighter card layout when two-up on small screens */
+        @media (max-width: 640px){
+            .card .media{height: 130px; padding: 0 6px}
+            .card .body{padding: 8px 8px 10px}
+            .card .title{font-size: 12px}
+            .card .price .now{font-size: 13px}
+            .card .price .old{font-size: 11px}
+            .card .meta{font-size: 10.5px}
+        }
     </style>
 
 
@@ -294,20 +319,20 @@
   .fx-container{max-width:1200px;margin:0 auto;padding:0 18px}
 
   /* ===== HERO ===== */
-  .hero{padding:72px 0 46px}
+  .hero{padding:clamp(48px,10vw,72px) 0 clamp(28px,6vw,46px); text-align:center}
   .hero h1{
     font-family:"Great Vibes", cursive; /* keep */
-    font-size:74px; line-height:1.05;
+    font-size:clamp(42px,8vw,74px); line-height:1.08;
     color:var(--rose); letter-spacing:.5px;
     text-shadow:0 3px 0 rgba(0,0,0,.05);
-    margin:0 0 26px;
+    margin:0 0 18px;
   }
-  .hero p{font:400 18px/1.8 "Manrope", system-ui; color:#4a5568; max-width:760px}
+  .hero p{font:400 clamp(14px,2.2vw,18px)/1.8 "Manrope", system-ui; color:#4a5568; max-width:760px; margin:0 auto}
   .hero .cta{
     display:inline-flex; align-items:center; justify-content:center;
-    padding:14px 28px; border-radius:4px; text-decoration:none;
+    padding:12px 24px; border-radius:4px; text-decoration:none;
     background:var(--gold); color:#fff; letter-spacing:.12em;
-    font-weight:700; text-transform:uppercase; margin-top:18px
+    font-weight:700; text-transform:uppercase; margin-top:16px
   }
 
   .fade-hr{height:1px;background:var(--line);margin:30px 0}
@@ -316,7 +341,7 @@
   .wn{padding:8px 0 22px}
   .wn-head{display:flex; align-items:flex-start; gap:80px}
   .wn-title{
-    font:800 64px/0.98 "Manrope", system-ui;
+    font:800 clamp(34px,6.4vw,64px)/0.98 "Manrope", system-ui;
     color:var(--wn-title); letter-spacing:.02em;
     margin:8px 0 6px; min-width:280px; max-width:320px;
   }
@@ -337,7 +362,8 @@
   /* ===== GRID ===== */
   .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px}
   @media (max-width: 1024px){ .grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
-  @media (max-width: 640px){ .grid{grid-template-columns:1fr} }
+  /* UPDATED: 2 cards per row on mobile */
+  @media (max-width: 640px){ .grid{grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px} }
 
   /* ===== CARD (smaller) ===== */
   .card{
@@ -432,6 +458,27 @@
   .card .price .now{color:#7c1130; font-weight:800; font-size:14px}
   .card .price .old{color:#9aa4b2; text-decoration:line-through; font-size:12px}
   .card .meta{color:#6b7280; font:600 11px/1 "Manrope"}
+
+  /* Tighter small-screen card */
+  @media (max-width:640px){
+    .card .media{height:130px; padding:0 6px}
+    .card .body{padding:8px 8px 10px}
+    .card .title{font-size:12px}
+    .card .price .now{font-size:13px}
+    .card .price .old{font-size:11px}
+    .card .meta{font-size:10.5px}
+  }
+
+  /* Header mobile refinements (mirror above block) */
+  @media (max-width:900px){
+    .wn-head{flex-direction:column; gap:24px; align-items:center}
+    .wn-title{min-width:0; max-width:none; text-align:center}
+    .wn-circles{gap:20px; justify-content:center; flex-wrap:wrap}
+    .wn-chip{width:100px; gap:8px}
+    .wn-circle{width:88px; height:88px}
+    .wn-label{font-size:9px}
+    .wn-tabs{justify-content:center}
+  }
 </style>
 @endsection
 
@@ -557,6 +604,10 @@
   margin: 0 !important;
 }
 
+/* Reduce media height on phones to help two-up grid */
+@media (max-width:640px){
+  .card .media{height:130px}
+}
     </style>
 
 @endsection
