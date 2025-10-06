@@ -75,7 +75,7 @@
         <ul>
           <li><a href="{{ route('home') }}">HOME</a></li>
           <li><a href="{{ route('brand') }}">THE BRAND</a></li>
-          <li><a href="/women">WOMEN</a></li>
+         
           <li><a href="{{ route('contact') }}">CONTACT US</a></li>
         </ul>
       </nav>

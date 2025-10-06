@@ -12,79 +12,106 @@
     --maroon-dark:#5b112d;
   }
 
-  .fx{max-width:1180px;margin:0 auto;padding:0 18px}
+  /* ===== layout ===== */
+  .fx{max-width:1180px;margin:0 auto;padding:0 clamp(12px,2.2vw,18px)}
+  .safe{padding-left:max(0px,env(safe-area-inset-left));padding-right:max(0px,env(safe-area-inset-right));}
 
-  /* =============== HERO ================= */
+  /* ===== HERO ===== */
   .hero{
-    background:#181818; color:#fff; min-height:320px;
-    display:flex; align-items:center; justify-content:center;
-    position:relative; overflow:hidden; text-align:center;
+    background:#181818;color:#fff;min-height:clamp(220px,32vw,340px);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;overflow:hidden;text-align:center;
   }
-  .hero .wrap{position:relative; z-index:2}
+  .hero .wrap{position:relative;z-index:2}
   .hero .ghost{
-    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-    font:900 clamp(140px,19vw,260px)/.9 "Inter",system-ui; color:#ffffff0f; letter-spacing:.08em; pointer-events:none;
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font:900 clamp(80px,18vw,260px)/.9 "Inter";color:#ffffff0f;letter-spacing:.08em;pointer-events:none;
   }
   .eyebrow{
-    font:900 14px/1.1 "Inter"; letter-spacing:.32em; text-transform:uppercase;
-    color:#d8d8d8; margin-bottom:12px;
+    font:900 clamp(10px,1.1vw,14px)/1.1 "Inter";letter-spacing:.32em;text-transform:uppercase;
+    color:#d8d8d8;margin-bottom:12px;
   }
   .title{
-    font:900 40px/1.05 "Inter"; letter-spacing:.10em; text-transform:uppercase;
-    white-space:nowrap; /* single line */
+    font:900 clamp(22px,4.2vw,40px)/1.05 "Inter";letter-spacing:.10em;text-transform:uppercase;
+    white-space:nowrap;
   }
   .sub{
-    margin-top:14px; color:#cfcfcf; font:800 11px/1 "Inter"; letter-spacing:.26em; text-transform:uppercase;
+    margin-top:14px;color:#cfcfcf;font:800 clamp(9px,1vw,11px)/1 "Inter";letter-spacing:.26em;text-transform:uppercase;
   }
 
-  /* ============== BODY (centered form) ============== */
+  /* ===== BODY (centered form) ===== */
   .section{background:#fff}
-  .center{padding:64px 0 84px}
-  .form-wrap{max-width:520px;margin:0 auto}
+  .center{padding:clamp(28px,6vw,84px) 0}
+  .form-wrap{
+    width:100%;
+    max-width:min(560px,100%);
+    margin:0 auto;
+  }
   .col-title{
-    font:800 11px/1 "Inter"; letter-spacing:.24em; text-transform:uppercase; color:#6d6d73; margin:0 0 14px;
+    font:800 clamp(10px,1vw,11px)/1 "Inter";letter-spacing:.24em;text-transform:uppercase;color:#6d6d73;margin:0 0 14px;
   }
 
   .input{
-    width:100%; height:36px;
-    border:1px solid #e3e3e3; border-radius:0; background:#fff;
-    padding:8px 10px; font:600 12px/1.2 "Inter"; color:#111; margin-bottom:12px;
+    width:100%;
+    height:clamp(38px,5.2vw,44px);
+    border:1px solid #e3e3e3;border-radius:0;background:#fff;
+    padding:10px 12px;
+    font:600 clamp(12px,1.2vw,14px)/1.2 "Inter";color:#111;margin-bottom:12px;
   }
   .input::placeholder{color:#b8b9bd}
-  .input:focus{outline:none; border-color:#cfcfcf; box-shadow:0 0 0 2px #f4f4f4}
+  .input:focus{outline:none;border-color:#cfcfcf;box-shadow:0 0 0 2px #f4f4f4}
   .input.is-invalid{border-color:#cf3c3c}
 
-  .row-actions{display:flex; align-items:center; gap:14px; margin-top:8px}
+  .row-actions{
+    display:flex;align-items:center;gap:14px;margin-top:10px;flex-wrap:wrap;
+  }
 
   .btn{
-    height:32px; padding:0 20px; border:0; border-radius:0; cursor:pointer;
-    font:900 10px/32px "Inter"; letter-spacing:.18em; text-transform:uppercase;
+    height:clamp(34px,5vw,40px);
+    padding:0 clamp(16px,2.2vw,20px);border:0;border-radius:0;cursor:pointer;
+    font:900 clamp(10px,1vw,11px)/1 "Inter";letter-spacing:.18em;text-transform:uppercase;
+    display:inline-flex;align-items:center;justify-content:center;
   }
-  .btn-maroon{background:var(--maroon); color:#fff}
+  .btn-maroon{background:var(--maroon);color:#fff}
   .btn-maroon:hover{background:var(--maroon-dark)}
 
   .link{
-    font:700 10px/1.2 "Inter"; color:#9a9aa0; text-decoration:none;
+    font:700 clamp(10px,1vw,11px)/1.2 "Inter";color:#9a9aa0;text-decoration:none
   }
-  .link:hover{color:#6d6d73; text-decoration:underline}
+  .link:hover{color:#6d6d73;text-decoration:underline}
 
   .alert-ok{
-    background:#f0fdf4; color:#14532d; border:1px solid #dcfce7; border-radius:6px;
-    font:600 12px/1.5 "Inter"; padding:10px 12px; margin:0 0 12px;
+    background:#f0fdf4;color:#14532d;border:1px solid #dcfce7;border-radius:6px;
+    font:600 clamp(12px,1.2vw,13px)/1.5 "Inter";padding:10px 12px;margin:0 0 12px;
   }
   .alert-err{
-    background:#fef2f2; color:#7f1d1d; border:1px solid #fecaca; border-radius:6px;
-    font:600 12px/1.5 "Inter"; padding:10px 12px; margin:0 0 12px;
+    background:#fef2f2;color:#7f1d1d;border:1px solid #fecaca;border-radius:6px;
+    font:600 clamp(12px,1.2vw,13px)/1.5 "Inter";padding:10px 12px;margin:0 0 12px;
   }
 
-  .stripe{height:1px; background:var(--line)}
+  .stripe{height:1px;background:var(--line)}
+
+  /* ===== Mobile tweaks: smaller inputs & centered CTA ===== */
+  @media (max-width: 640px){
+    /* make the whole form visually narrower */
+    .form-wrap{max-width: 320px;}
+    /* slightly smaller inputs */
+    .input{height:36px;padding:8px 10px;font-size:12px}
+    /* center actions and shrink button width */
+    .row-actions{justify-content:center;align-items:center;gap:10px}
+    .btn{width: 160px}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
+  }
 </style>
 @endsection
 
 @section('content')
 
   {{-- ============== HERO ============== --}}
-  <header class="hero">
+  <header class="hero safe">
     <div class="wrap">
       <div class="eyebrow">WELCOME TO</div>
       <div class="title">GULEY THREADS</div>
@@ -115,18 +142,27 @@
 
         <form method="POST" action="{{ route('login') }}" novalidate>
           @csrf
-          <input type="email"
-                 name="email"
-                 class="input @error('email') is-invalid @enderror"
-                 placeholder="Your Email."
-                 value="{{ old('email') }}"
-                 required>
+          <input
+            type="email"
+            name="email"
+            class="input @error('email') is-invalid @enderror"
+            placeholder="Your Email."
+            value="{{ old('email') }}"
+            required
+            inputmode="email"
+            autocomplete="email"
+            aria-label="Email"
+          >
 
-          <input type="password"
-                 name="password"
-                 class="input @error('password') is-invalid @enderror"
-                 placeholder="Your password."
-                 required>
+          <input
+            type="password"
+            name="password"
+            class="input @error('password') is-invalid @enderror"
+            placeholder="Your password."
+            required
+            autocomplete="current-password"
+            aria-label="Password"
+          >
 
           <div class="row-actions">
             <button type="submit" class="btn btn-maroon">Sign In</button>
