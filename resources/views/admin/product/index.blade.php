@@ -4,85 +4,113 @@
 <style>
 :root{
   --ink:#0f172a;--muted:#64748b;--ring:rgba(79,70,229,.18);
-  --indigo:#4f46e5;--rose:#e11d48;--blue:#2563eb;
+  --indigo:#4f46e5;--rose:#e11d48;--blue:#2563eb;--border:#e5e7eb;
 }
-.page{max-width:1120px;margin:0 auto;padding:28px 16px}
-.h1{font:800 44px/1.05 ui-sans-serif,system-ui,"Segoe UI",Roboto,Ubuntu,"Helvetica Neue",Arial;color:var(--ink);letter-spacing:-.02em}
 
-/* Toolbar & Controls */
+/* Page + Heading */
+.page{max-width:1120px;margin:0 auto;padding:28px 16px}
+.h1{font:800 44px/1.05 ui-sans-serif,system-ui,"Segoe UI",Roboto,Ubuntu,"Helvetica Neue",Arial;color:var(--ink);letter-spacing:-.02em;margin:0}
+
+/* Top row layout */
+.page-head{
+  display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-bottom:16px
+}
+
+/* Controls */
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;width:100%}
 .toolbar input[type="search"],.toolbar select{
-  border:1px solid #e5e7eb;border-radius:.75rem;padding:.6rem .9rem;min-width:220px;outline:none;
+  border:1px solid var(--border);border-radius:.75rem;padding:.6rem .9rem;min-width:220px;outline:none;
+  font:600 14px/1 ui-sans-serif;color:#0f172a;background:#fff;
 }
+.toolbar input[type="search"]::placeholder{color:#9aa3b2}
 .toolbar input[type="search"]:focus{border-color:var(--indigo);box-shadow:0 0 0 .35rem var(--ring)}
 .btn-primary{
   display:inline-flex;align-items:center;justify-content:center;padding:.6rem 1rem;
-  border-radius:.7rem;background:var(--indigo);color:#fff;font-weight:800;
-  text-decoration:none;box-shadow:0 6px 14px rgba(79,70,229,.25)
+  border-radius:.7rem;background:var(--indigo);color:#fff;font-weight:800;text-decoration:none;
+  box-shadow:0 6px 14px rgba(79,70,229,.25)
 }
 .btn-primary:hover{background:#4338ca}
 
-/* Table Styles */
+/* DESKTOP TABLE */
 .table-wrap{
-  overflow:auto;background:#fff;border:1px solid #eef2f7;
-  border-radius:1rem;box-shadow:0 8px 20px rgba(2,6,23,.06);
+  overflow:auto;background:#fff;border:1px solid #eef2f7;border-radius:1rem;box-shadow:0 8px 20px rgba(2,6,23,.06)
 }
-table{width:100%;border-collapse:collapse;min-width:800px}
-thead th{
-  background:#f8fafc;font:600 13px/1 ui-sans-serif;color:#475569;
-  text-align:left;padding:12px 14px;border-bottom:1px solid #e2e8f0;
-  white-space:nowrap;
+.table{
+  width:100%;border-collapse:collapse;min-width:880px
 }
-tbody td{padding:12px 14px;border-top:1px solid #f1f5f9;vertical-align:middle}
-tr:hover{background:#fafafa}
+.table thead th{
+  background:#f8fafc;font:600 13px/1 ui-sans-serif;color:#475569;text-align:left;padding:12px 14px;
+  border-bottom:1px solid #e2e8f0;white-space:nowrap
+}
+.table tbody td{padding:12px 14px;border-top:1px solid #f1f5f9;vertical-align:middle}
+.table tr:hover{background:#fafafa}
 
-/* Utility & Status Styles */
-.thumb{width:56px;height:56px;border-radius:.6rem;object-fit:cover;
-  border:1px solid #e5e7eb;box-shadow:0 4px 10px rgba(2,6,23,.06);background:#f1f5f9;
-}
-.btn-sm{padding:.4rem .7rem;font-size:.8rem;font-weight:700;border-radius:.5rem}
+/* Shared bits */
+.thumb{width:56px;height:56px;border-radius:.6rem;object-fit:cover;border:1px solid var(--border);box-shadow:0 4px 10px rgba(2,6,23,.06);background:#f1f5f9}
+.btn-sm{padding:.4rem .7rem;font-size:.8rem;font-weight:700;border-radius:.5rem;border:0;cursor:pointer}
 .btn-edit{background:#2563eb;color:#fff}.btn-edit:hover{background:#1e40af}
 .btn-del{background:#e11d48;color:#fff}.btn-del:hover{background:#9f1239}
 .price-main{color:#4f46e5;font-weight:800}
-.price-old{color:#94a3b8;text-decoration:line-through}
+.price-old{color:#94a3b8;text-decoration:line-through;margin-left:6px}
 
 .badge{
   display:inline-flex;align-items:center;padding:.25rem .55rem;border-radius:.5rem;
-  font-weight:700;font-size:.75rem;
+  font-weight:700;font-size:.75rem;border:1px solid transparent
 }
-.badge.stock{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
-.badge.out{background:#fff1f2;color:#9f1239;border:1px solid #fecdd3}
-.badge.active{background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe}
-.badge.inactive{background:#f1f5f9;color:#334155;border:1px solid #e2e8f0}
+.badge.stock{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
+.badge.out{background:#fff1f2;color:#9f1239;border-color:#fecdd3}
+.badge.active{background:#eef2ff;color:#3730a3;border-color:#c7d2fe}
+.badge.inactive{background:#f1f5f9;color:#334155;border-color:#e2e8f0}
 
-/* Responsive Adjustments */
-@media (max-width:1024px){
-  .h1{font-size:36px}
-  .toolbar input[type="search"],.toolbar select{min-width:180px}
+/* ===== MOBILE CARD LIST ===== */
+.mobile-list{display:none}
+.card{
+  display:grid;grid-template-columns:64px 1fr;gap:12px;
+  padding:12px;border-top:1px solid #eef2f7;background:#fff
 }
+.card:first-child{border-top:none;border-top-left-radius:12px;border-top-right-radius:12px}
+.card:last-child{border-bottom-left-radius:12px;border-bottom-right-radius:12px;box-shadow:0 8px 20px rgba(2,6,23,.06)}
+.card .thumb{width:64px;height:64px}
+.card h3{margin:0 0 4px;font:800 15px/1.2 ui-sans-serif;color:#0f172a}
+.card .row{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center}
+.card .meta{color:var(--muted);font:600 12px/1.2 ui-sans-serif}
+.card .actions{display:flex;gap:8px;margin-top:10px}
+.card .price{font-size:14px}
 
+/* ===== BREAKPOINTS ===== */
+@media (max-width:1200px){
+  .h1{font-size:38px}
+}
+@media (max-width:992px){
+  .h1{font-size:32px}
+}
 @media (max-width:768px){
-  .h1{font-size:28px;text-align:center}
-  .page > div:first-child{grid-template-columns:1fr;gap:10px;text-align:center}
+  .page{padding:22px 14px}
+  .page-head{grid-template-columns:1fr;gap:10px;text-align:center}
+  .h1{font-size:28px}
   .toolbar{justify-content:center}
+  .toolbar input[type="search"],.toolbar select{min-width:180px}
   .btn-primary{width:100%;justify-content:center}
-  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  table{min-width:680px}
 }
-
-@media (max-width:480px){
-  .page{padding:20px 10px}
+/* Switch to card view under 640px */
+@media (max-width:640px){
+  .table-wrap{display:none}
+  .mobile-list{display:block}
   .toolbar input[type="search"],.toolbar select{min-width:140px;font-size:13px;padding:.5rem .7rem}
-  .thumb{width:44px;height:44px}
-  .btn-sm{padding:.35rem .6rem;font-size:.7rem}
-  .btn-primary{font-size:13px;padding:.55rem .9rem}
-  thead th,tbody td{padding:10px 8px;font-size:13px}
+}
+/* Small phones polish */
+@media (max-width:420px){
+  .page{padding:18px 10px}
+  .card{grid-template-columns:56px 1fr}
+  .card .thumb{width:56px;height:56px}
+  .btn-sm{padding:.35rem .6rem;font-size:.72rem}
 }
 </style>
 
 <div class="page">
-  <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-bottom:16px">
+  <div class="page-head">
     <h1 class="h1">Products</h1>
+
     <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
       <form method="GET" class="toolbar">
         <input type="search" name="q" placeholder="Search products…" value="{{ request('q') }}">
@@ -106,8 +134,9 @@ tr:hover{background:#fafafa}
     </div>
   @endif
 
+  {{-- Desktop/Tablet table --}}
   <div class="table-wrap">
-    <table>
+    <table class="table">
       <thead>
         <tr>
           <th>Images</th>
@@ -144,7 +173,7 @@ tr:hover{background:#fafafa}
           <td>
             <span class="price-main">${{ number_format($product->final_price, 2) }}</span>
             @if(!is_null($product->original_price) && $product->original_price > $product->final_price)
-              <span class="price-old" style="margin-left:6px">${{ number_format($product->original_price, 2) }}</span>
+              <span class="price-old">${{ number_format($product->original_price, 2) }}</span>
             @endif
           </td>
           <td style="font-weight:600;color:#334155">{{ ucfirst($product->pieces) }}</td>
@@ -171,6 +200,53 @@ tr:hover{background:#fafafa}
       @endforelse
       </tbody>
     </table>
+  </div>
+
+  {{-- Mobile card list --}}
+  <div class="mobile-list">
+    @forelse($products as $product)
+      @php
+        $u = (is_array($product->images) && count($product->images))
+            ? Storage::disk('public')->url($product->images[0])
+            : null;
+      @endphp
+      <article class="card">
+        @if($u)
+          <img class="thumb" src="{{ $u }}" alt="img" onerror="this.removeAttribute('src');">
+        @else
+          <div class="thumb"></div>
+        @endif
+
+        <div>
+          <h3>{{ $product->name }}</h3>
+          <div class="row">
+            <div class="price">
+              <span class="price-main">${{ number_format($product->final_price, 2) }}</span>
+              @if(!is_null($product->original_price) && $product->original_price > $product->final_price)
+                <span class="price-old">${{ number_format($product->original_price, 2) }}</span>
+              @endif
+            </div>
+            <span class="meta">{{ ucfirst($product->pieces) }}</span>
+            <span class="meta">{{ ucfirst($product->collection) }}</span>
+            <span class="badge {{ $product->stock > 0 ? 'stock' : 'out' }}">{{ $product->stock > 0 ? $product->stock : '0' }}</span>
+            <span class="badge {{ $product->is_active ? 'active' : 'inactive' }}">{{ $product->is_active ? 'Active' : 'Inactive' }}</span>
+          </div>
+          <div class="meta" style="margin-top:6px">Created: {{ $product->created_at->format('M d, Y') }}</div>
+
+          <div class="actions">
+            <a href="{{ route('admin.products.edit',$product) }}" class="btn-sm btn-edit">✏ Edit</a>
+            <form method="POST" action="{{ route('admin.products.destroy',$product) }}" onsubmit="return confirm('Delete this product?')">
+              @csrf @method('DELETE')
+              <button class="btn-sm btn-del">🗑 Delete</button>
+            </form>
+          </div>
+        </div>
+      </article>
+    @empty
+      <div style="text-align:center;color:#64748b;padding:24px;background:#fff;border-radius:12px;border:1px solid #eef2f7">
+        No products found.
+      </div>
+    @endforelse
   </div>
 
   <div style="margin-top:18px">
