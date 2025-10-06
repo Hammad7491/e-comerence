@@ -1,238 +1,168 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="utf-8" />
-    <title>Register | Silva - Responsive Admin Dashboard Template</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc." />
-    <meta name="author" content="Code FIxxer" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-
-    <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
-
-    <!-- App css -->
-    <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css" id="app-style" />
-
-    <!-- Icons -->
-    <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
-
-</head>
-
-<body class="bg-primary-subtle">
-    <!-- Begin page -->
-    <div class="account-page">
-        <div class="container-fluid p-0">
-            <div class="row align-items-center g-0">
-
-                <div class="col-xl-5">
-                    <div class="row">
-                        <div class="col-md-8 mx-auto">
-                            <div class="card p-3">
-                                <div class="card-body">
-
-                                    <div class="mb-0 border-0 p-md-5 p-lg-0 p-4">
-                                        <div class="mb-4 p-0 text-center">
-                                            <a href="index.html" class="auth-logo">
-                                                <img src="{{ asset('assets/images/logo-dark.png') }}" alt="logo-dark"
-                                                    class="mx-auto" height="28" />
-                                            </a>
-                                        </div>
-
-                                        <div class="auth-title-section mb-3 text-center">
-                                            <h3 class="text-dark fs-20 fw-medium mb-2">Welcome back</h3>
-                                            <p class="text-dark text-capitalize fs-14 mb-0">Sign in to continue to
-                                                silve.</p>
-                                        </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                        <div class="row">
-                                       <div class="col-6 mt-2">
-    <a href="{{ route('google.login') }}" class="btn text-dark border fw-normal d-flex align-items-center justify-content-center">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48" class="me-2">
-            <path fill="#ffc107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917" />
-            <path fill="#ff3d00" d="m6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691" />
-            <path fill="#4caf50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44" />
-            <path fill="#1976d2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917" />
-        </svg>
-        <span>Google</span>
-    </a>
-</div>
-
-
-<div class="col-6 mt-2">
-    <a href="{{ route('facebook.login') }}" class="btn text-dark border fw-normal d-flex align-items-center justify-content-center">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 256 256" class="me-2">
-            <path fill="#1877f2"
-                  d="M256 128C256 57.308 198.692 0 128 0S0 57.308 0 128c0 63.888 46.808 116.843 108 126.445V165H75.5v-37H108V99.8c0-32.08 19.11-49.8 48.348-49.8C170.352 50 185 52.5 185 52.5V84h-16.14C152.959 84 148 93.867 148 103.99V128h35.5l-5.675 37H148v89.445c61.192-9.602 108-62.556 108-126.445"/>
-            <path fill="#fff"
-                  d="m177.825 165l5.675-37H148v-24.01C148 93.866 152.959 84 168.86 84H185V52.5S170.352 50 156.347 50C127.11 50 108 67.72 108 99.8V128H75.5v37H108v89.445A129 129 0 0 0 128 256a129 129 0 0 0 20-1.555V165z"/>
-        </svg>
-        <span>Facebook</span>
-    </a>
-</div>
-
-                                        </div>
-
-                                        <div class="saprator my-4"><span>or continue with email</span></div>
-
-                                        <div class="pt-0">
-                                            <!-- resources/views/auth/register.blade.php -->
-                                            <form action="{{ route('register') }}" method="POST" class="my-4">
-                                                @csrf
-                                                <div class="form-group mb-3">
-                                                    <label for="name" class="form-label">Name</label>
-                                                    <input class="form-control" name="name" type="text"
-                                                        id="name" required="" placeholder="Enter your name"
-                                                        value="{{ old('name') }}">
-                                                    @error('name')
-                                                        <div class="text-danger">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-
-                                                <div class="form-group mb-3">
-                                                    <label for="emailaddress" class="form-label">Email address</label>
-                                                    <input class="form-control" type="email" id="emailaddress"
-                                                        name="email" required="" placeholder="Enter your email"
-                                                        value="{{ old('email') }}">
-                                                    @error('email')
-                                                        <div class="text-danger">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-
-                                                <div class="form-group mb-3">
-                                                    <label for="password" class="form-label">Password</label>
-                                                    <input class="form-control" type="password" required=""
-                                                        id="password" name="password"
-                                                        placeholder="Enter your password">
-                                                    @error('password')
-                                                        <div class="text-danger">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-
-                                                <div class="form-group mb-3">
-                                                    <label for="password_confirmation" class="form-label">Confirm
-                                                        Password</label>
-                                                    <input class="form-control" type="password" required=""
-                                                        id="password_confirmation" name="password_confirmation"
-                                                        placeholder="Confirm your password">
-                                                </div>
-
-                                                <div class="form-group d-flex mb-3">
-                                                    <div class="col-12">
-                                                        <div class="form-check">
-                                                            <input type="checkbox" class="form-check-input"
-                                                                id="checkbox-signin">
-                                                            <label class="form-check-label" for="checkbox-signin">I
-                                                                agree to the <a href="#"
-                                                                    class="text-primary fw-medium">Terms and
-                                                                    Conditions</a></label>
-                                                        </div>
-                                                    </div><!--end col-->
-                                                </div>
-
-                                                <div class="form-group mb-0 row">
-                                                    <div class="col-12">
-                                                        <div class="d-grid">
-                                                            <button class="btn btn-primary"
-                                                                type="submit">Register</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
-
-
-                                            <div class="text-center text-muted mb-4">
-                                                <p class="mb-0">Already have an account ?<a
-                                                        class='text-primary ms-2 fw-medium'
-                                                        href='{{ route('loginform') }}'>Login here</a></p>
-                                            </div>
-
-                                        </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-7">
-                    <div class="account-page-bg p-md-5 p-4">
-                        <div class="text-center">
-                            <div class="auth-image">
-                                <img src="{{ asset('assets/images/auth-images.svg') }}" class="mx-auto img-fluid"
-                                    alt="images">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
+@extends('frontend.layouts.app')
+@section('title','Register')
+
+@section('styles')
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0f0f10;
+    --muted:#8b8f96;
+    --line:#ececec;
+    --maroon:#6a0f2a;
+    --maroon-dark:#5b112d;
+  }
+
+  .fx{max-width:1180px;margin:0 auto;padding:0 18px}
+
+  /* =============== HERO ================= */
+  .hero{
+    background:#181818; color:#fff; min-height:320px;
+    display:flex; align-items:center; justify-content:center;
+    position:relative; overflow:hidden; text-align:center;
+  }
+  .hero .wrap{position:relative; z-index:2}
+  .hero .ghost{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font:900 clamp(140px,19vw,260px)/.9 "Inter",system-ui; color:#ffffff0f; letter-spacing:.08em; pointer-events:none;
+  }
+  .eyebrow{
+    font:900 14px/1.1 "Inter"; letter-spacing:.32em; text-transform:uppercase;
+    color:#d8d8d8; margin-bottom:12px;
+  }
+  .title{
+    font:900 40px/1.05 "Inter"; letter-spacing:.10em; text-transform:uppercase;
+    white-space:nowrap; /* single line */
+  }
+  .sub{
+    margin-top:14px; color:#cfcfcf; font:800 11px/1 "Inter"; letter-spacing:.26em; text-transform:uppercase;
+  }
+
+  /* ============== BODY (centered form) ============== */
+  .section{background:#fff}
+  .center{padding:64px 0 84px}
+  .form-wrap{max-width:520px;margin:0 auto}
+  .col-title{
+    font:800 11px/1 "Inter"; letter-spacing:.24em; text-transform:uppercase; color:#6d6d73; margin:0 0 14px;
+  }
+
+  .input{
+    width:100%; height:36px;
+    border:1px solid #e3e3e3; border-radius:0; background:#fff;
+    padding:8px 10px; font:600 12px/1.2 "Inter"; color:#111; margin-bottom:12px;
+  }
+  .input::placeholder{color:#b8b9bd}
+  .input:focus{outline:none; border-color:#cfcfcf; box-shadow:0 0 0 2px #f4f4f4}
+  .input.is-invalid{border-color:#cf3c3c}
+
+  .row-actions{display:flex; align-items:center; gap:14px; margin-top:10px}
+  .note{font:600 11px/1.6 "Inter"; color:#9a9aa0}
+
+  .btn{
+    height:32px; padding:0 20px; border:0; border-radius:0; cursor:pointer;
+    font:900 10px/32px "Inter"; letter-spacing:.18em; text-transform:uppercase;
+  }
+  .btn-maroon{background:var(--maroon); color:#fff}
+  .btn-maroon:hover{background:var(--maroon-dark)}
+
+  .link{
+    font:700 10px/1.2 "Inter"; color:#9a9aa0; text-decoration:none;
+  }
+  .link:hover{color:#6d6d73; text-decoration:underline}
+
+  .alert-ok{
+    background:#f0fdf4; color:#14532d; border:1px solid #dcfce7; border-radius:6px;
+    font:600 12px/1.5 "Inter"; padding:10px 12px; margin:0 0 12px;
+  }
+  .alert-err{
+    background:#fef2f2; color:#7f1d1d; border:1px solid #fecaca; border-radius:6px;
+    font:600 12px/1.5 "Inter"; padding:10px 12px; margin:0 0 12px;
+  }
+
+  .stripe{height:1px; background:var(--line)}
+</style>
+@endsection
+
+@section('content')
+
+  {{-- ============== HERO ============== --}}
+  <header class="hero">
+    <div class="wrap">
+      <div class="eyebrow">WELCOME TO</div>
+      <div class="title">GULEY THREADS</div>
+      <div class="sub">REGISTER</div>
     </div>
-    <!-- END wrapper -->
+    <div class="ghost">GULEY THREADS</div>
+  </header>
 
-    <!-- Vendor -->
-    <script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/waypoints/lib/jquery.waypoints.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/jquery.counterup/jquery.counterup.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/feather-icons/feather.min.js') }}"></script>
+  {{-- ============== REGISTER (center) ============== --}}
+  <section class="section">
+    <div class="fx center">
+      <div class="form-wrap">
+        <div class="col-title">REGISTER</div>
 
-    <!-- App js-->
-    <script src="{{ asset('assets/js/app.js') }}"></script>
+        @if(session('status'))
+          <div class="alert-ok">{{ session('status') }}</div>
+        @endif
 
-</body>
+        @if ($errors->any())
+          <div class="alert-err">
+            <ul style="margin:0;padding-left:18px">
+              @foreach ($errors->all() as $error)
+                <li style="font-size:12px">{{ $error }}</li>
+              @endforeach
+            </ul>
+          </div>
+        @endif
 
-</html>
+        <form action="{{ route('register') }}" method="POST" novalidate>
+          @csrf
+
+          <input type="text"
+                 name="name"
+                 class="input @error('name') is-invalid @enderror"
+                 placeholder="Your Name."
+                 value="{{ old('name') }}"
+                 required>
+
+          <input type="email"
+                 name="email"
+                 class="input @error('email') is-invalid @enderror"
+                 placeholder="Your Email."
+                 value="{{ old('email') }}"
+                 required>
+
+          <input type="password"
+                 name="password"
+                 class="input @error('password') is-invalid @enderror"
+                 placeholder="Your password."
+                 required>
+
+          <input type="password"
+                 name="password_confirmation"
+                 class="input"
+                 placeholder="Confirm password."
+                 required>
+
+          <label style="display:flex;align-items:flex-start;gap:10px;margin-top:6px">
+            <input type="checkbox" name="marketing_opt_in" value="1" style="margin-top:3px">
+            <span class="note">Sign me up for exclusive updates, discounts, new arrivals, contests, and more!</span>
+          </label>
+
+          <div class="row-actions">
+            <button type="submit" class="btn btn-maroon">Create Account</button>
+            <span class="note">By clicking “Create Account”, you agree to our
+              <a class="link" href="{{ \Illuminate\Support\Facades\Route::has('privacy') ? route('privacy') : url('/privacy-policy') }}">Privacy Policy</a>.
+            </span>
+          </div>
+        </form>
+
+        <p class="note" style="margin-top:14px">
+          Already have an account?
+          <a class="link" href="{{ \Illuminate\Support\Facades\Route::has('loginform') ? route('loginform') : route('login') }}">Sign in</a>
+        </p>
+      </div>
+    </div>
+    <div class="stripe"></div>
+  </section>
+
+@endsection
