@@ -131,17 +131,13 @@ Route::prefix('admin')->middleware(['auth','role:admin'])->name('admin.')->group
 
 
 Route::middleware('auth')->group(function () {
-    // Profile (name/email etc.)
-    Route::get('/profile/edit',  [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::match(['post','put'], '/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 
-    // Password change (separate screen)
-    Route::get('/change-password',  [ProfileController::class, 'showChangePasswordForm'])
-        ->name('password.change');
-
-    Route::post('/change-password', [ProfileController::class, 'updatePassword'])
-        ->name('password.update');
+    Route::get('/change-password', [ProfileController::class, 'showChangePasswordForm'])->name('password.change');
+    Route::post('/change-password', [ProfileController::class, 'updatePassword'])->name('password.update');
 });
+
 
 
 
