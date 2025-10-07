@@ -16,7 +16,7 @@
     background:#f7f7f8;
   }
   .card-psd{
-    width: min(560px, 95vw);
+    width: min(560px, 92vw);
     background: var(--card);
     border-radius: 16px;
     box-shadow: 0 30px 80px rgba(15,23,42,.10);
