@@ -75,7 +75,7 @@ class ProfileController extends Controller
 
         if (! Hash::check($request->current_password, $user->password)) {
             return back()
-                ->withErrors(['current_password' => 'Current password is wrong.'])
+                ->withErrors(['current_password' => 'Current password is incorrect.'])
                 ->withInput();
         }
 
