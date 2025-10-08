@@ -19,7 +19,7 @@
     width: min(560px, 92vw);
     background: var(--card);
     border-radius: 16px;
-    box-shadow: 0 30px 80px rgba(15,23,42,.8);
+    box-shadow: 0 30px 80px rgba(15,23,42,.10);
     padding: 28px 24px 24px;
   }
   .title-psd{
