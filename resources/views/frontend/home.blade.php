@@ -601,7 +601,7 @@
   max-width:100%;
   object-fit: contain;
   display:block;
-  margin: 0 !important;
+  margin:  !important;
 }
 
 /* Reduce media height on phones to help two-up grid */
