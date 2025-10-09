@@ -5,7 +5,7 @@
 :root{
   --ink:#0f172a;--muted:#64748b;--ring:rgba(79,70,229,.18);
   --indigo:#4f46e5;--rose:#e11d48;--green:#16a34a;--border:#e5e7eb;
-  --card:#ffffff;--bg:#f8fafc;
+  
 }
 
 /* Page shell */
