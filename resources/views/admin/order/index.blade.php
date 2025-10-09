@@ -92,7 +92,7 @@ tr:hover{background:#fafafa}
   @endif
 
   {{-- Desktop / tablet table --}}
-  <div class="table-wrap">
+  <div class="table">
     <table>
       <thead>
         <tr>
