@@ -239,6 +239,6 @@ function updateTotals(){
   if (totalLbl) totalLbl.textContent = 'PKR ' + Math.round(unitPrice * q).toLocaleString();
 }
 // init
-updateTotals();
+
 </script>
 @endsection

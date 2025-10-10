@@ -161,7 +161,7 @@ body{background:var(--bg)}
                 @endforeach
               </div>
               <p class="fx-note">Total kept images after save will be up to 3 (existing + new).</p>
-            </div>
+            
           @endif
         </div>
       </div>
