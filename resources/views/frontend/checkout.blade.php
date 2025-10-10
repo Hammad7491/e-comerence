@@ -241,7 +241,7 @@
     }
   }
   radios.forEach(r => r.addEventListener('change', refreshPaymentUI));
-  
+  refreshPaymentUI();
 
   // prevent double submit
   const form = document.getElementById('checkout-form');
