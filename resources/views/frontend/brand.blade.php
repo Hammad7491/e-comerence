@@ -130,7 +130,7 @@
             <img src="/assets/images/brand/handwork-border.jpg" alt="Handcrafted floral border">
           </figure>
           <div class="values mt24">
-            
+            <div class="h-eyebrow">OUR VALUES, VISION AND STRATEGY</div>
             <p>we believe in the beauty of craftsmanship, the importance of fair treatment for artisans, and the need for sustainable, mindful fashion. each piece we create reflects our respect for cultural heritage and individuality, made with care and intention. our vision is to bring handcrafted, meaningful clothing to people who value quality and ethics, while supporting the communities behind the art. we do this by working directly with skilled artisans, designing timeless styles, producing responsibly, and building connections with conscious customers around the world.</p>
           </div>
         </div>
