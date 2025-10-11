@@ -182,7 +182,7 @@
                 <form method="POST" action="{{ route('cart.remove', $row['product_id']) }}" onsubmit="return confirm('Remove this item?')">
                   @csrf
                   @method('DELETE')
-                  <button type="submit" class="btn-outline">Remove</button>
+                  
                 </form>
               </td>
             </tr>
