@@ -10,7 +10,7 @@
     </div>
   @endif
 
-  @if ($errors->any())
+  
     <div style="margin:8px 0 16px;padding:12px 14px;border-radius:.75rem;background:#fef2f2;color:#7f1d1d;border:1px solid #fecaca;">
       <ul style="margin:0;padding-left:18px">
         @foreach ($errors->all() as $error)
