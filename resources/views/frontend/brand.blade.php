@@ -116,7 +116,7 @@
         </figure>
 
         <div class="story">
-         
+          <div class="h-eyebrow">OUR STORY</div>
           <p>at guley threads, every stitch tells a story.</p>
           <p>founded in 2025, our brand was born out of a deep love for traditional hand embroidery and timeless craftsmanship. what started as a small home studio with a passion for preserving age-old techniques has now grown into a clothing label that celebrates slow fashion, cultural heritage, and meaningful design.</p>
           <p>we work closely with skilled artisans who pour generations of knowledge and artistry into every garment. each piece is carefully hand-embroidered, making it not just clothing, but wearable art: crafted with patience, precision, and pride.</p>
