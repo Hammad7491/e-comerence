@@ -112,7 +112,7 @@
 .dropdown-item:hover{
   background:#f3f4f6;
 }
-.dropdown-divider{border-color:#eef2f7}
+
 
 /* Make it comfy on very small widths */
 @media (max-width: 375px){
