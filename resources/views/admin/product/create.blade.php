@@ -146,7 +146,7 @@ body{background:var(--bg)}
           </div>
 
           @php $existingImages = isset($product) && is_array($product->images) ? $product->images : []; @endphp
-          @if(count($existingImages))
+          
             <div>
               <label class="fx-label">Current Images</label>
               <div class="fx-previews">
