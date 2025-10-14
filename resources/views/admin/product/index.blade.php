@@ -244,7 +244,7 @@
       </article>
     @empty
       <div style="text-align:center;color:#64748b;padding:24px;background:#fff;border-radius:12px;border:1px solid #eef2f7">
-        No products found.
+        
       </div>
     @endforelse
   </div>
