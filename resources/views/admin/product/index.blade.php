@@ -1,6 +1,34 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    use Illuminate\Support\Str;
+
+    /**
+     * Build both public & storage URLs for a given image-ish value.
+     * $raw can be: "abc.jpg" or "products/abc.jpg" or a full URL.
+     * Returns array: ['primary' => url, 'fallback' => url] or null when empty.
+     */
+    function productImgUrls($raw) {
+        if (!$raw) return null;
+
+        // If it's already an absolute URL, use it as both primary/fallback
+        if (Str::startsWith($raw, ['http://','https://','//'])) {
+            return ['primary' => $raw, 'fallback' => $raw];
+        }
+
+        $rel = ltrim($raw, '/');
+        $rel = Str::startsWith($rel, 'products/') ? $rel : 'products/' . $rel;
+
+        // Primary tries /public/products/*
+        $primary  = asset($rel);
+        // Fallback tries /public/storage/products/* (after storage:link)
+        $fallback = asset('storage/' . $rel);
+
+        return compact('primary', 'fallback');
+    }
+@endphp
+
 <style>
 :root{
   --ink:#0f172a;--muted:#64748b;--ring:rgba(79,70,229,.18);
@@ -12,9 +40,7 @@
 .h1{font:800 44px/1.05 ui-sans-serif,system-ui,"Segoe UI",Roboto,Ubuntu,"Helvetica Neue",Arial;color:var(--ink);letter-spacing:-.02em;margin:0}
 
 /* Top row layout */
-.page-head{
-  display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-bottom:16px
-}
+.page-head{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-bottom:16px}
 
 /* Controls */
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;width:100%}
@@ -31,13 +57,9 @@
 }
 .btn-primary:hover{background:#4338ca}
 
-/* DESKTOP TABLE */
-.table-wrap{
-  overflow:auto;background:#fff;border:1px solid #eef2f7;border-radius:1rem;box-shadow:0 8px 20px rgba(2,6,23,.06)
-}
-.table{
-  width:100%;border-collapse:collapse;min-width:880px
-}
+/* Table */
+.table-wrap{overflow:auto;background:#fff;border:1px solid #eef2f7;border-radius:1rem;box-shadow:0 8px 20px rgba(2,6,23,.06)}
+.table{width:100%;border-collapse:collapse;min-width:880px}
 .table thead th{
   background:#f8fafc;font:600 13px/1 ui-sans-serif;color:#475569;text-align:left;padding:12px 14px;
   border-bottom:1px solid #e2e8f0;white-space:nowrap
@@ -45,72 +67,37 @@
 .table tbody td{padding:12px 14px;border-top:1px solid #f1f5f9;vertical-align:middle}
 .table tr:hover{background:#fafafa}
 
-/* Shared bits */
+/* Shared */
 .thumb{width:56px;height:56px;border-radius:.6rem;object-fit:cover;border:1px solid var(--border);box-shadow:0 4px 10px rgba(2,6,23,.06);background:#f1f5f9}
 .btn-sm{padding:.4rem .7rem;font-size:.8rem;font-weight:700;border-radius:.5rem;border:0;cursor:pointer}
 .btn-edit{background:#2563eb;color:#fff}.btn-edit:hover{background:#1e40af}
 .btn-del{background:#e11d48;color:#fff}.btn-del:hover{background:#9f1239}
 .price-main{color:#4f46e5;font-weight:800}
 .price-old{color:#94a3b8;text-decoration:line-through;margin-left:6px}
-
-.badge{
-  display:inline-flex;align-items:center;padding:.25rem .55rem;border-radius:.5rem;
-  font-weight:700;font-size:.75rem;border:1px solid transparent
-}
+.badge{display:inline-flex;align-items:center;padding:.25rem .55rem;border-radius:.5rem;font-weight:700;font-size:.75rem;border:1px solid transparent}
 .badge.stock{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
 .badge.out{background:#fff1f2;color:#9f1239;border-color:#fecdd3}
 .badge.active{background:#eef2ff;color:#3730a3;border-color:#c7d2fe}
 .badge.inactive{background:#f1f5f9;color:#334155;border-color:#e2e8f0}
 
-/* ===== MOBILE CARD LIST ===== */
+/* Mobile Cards */
 .mobile-list{display:none}
-.card{
-  display:grid;grid-template-columns:64px 1fr;gap:12px;
-  padding:12px;border-top:1px solid #eef2f7;background:#fff
-}
+.card{display:grid;grid-template-columns:64px 1fr;gap:12px;padding:12px;border-top:1px solid #eef2f7;background:#fff}
 .card:first-child{border-top:none;border-top-left-radius:12px;border-top-right-radius:12px}
 .card:last-child{border-bottom-left-radius:12px;border-bottom-right-radius:12px;box-shadow:0 8px 20px rgba(2,6,23,.06)}
-.card .thumb{width:64px;height:64px}
 .card h3{margin:0 0 4px;font:800 15px/1.2 ui-sans-serif;color:#0f172a}
 .card .row{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center}
 .card .meta{color:var(--muted);font:600 12px/1.2 ui-sans-serif}
 .card .actions{display:flex;gap:8px;margin-top:10px}
 .card .price{font-size:14px}
 
-/* ===== BREAKPOINTS ===== */
-@media (max-width:1200px){
-  .h1{font-size:38px}
-}
-@media (max-width:992px){
-  .h1{font-size:32px}
-}
-@media (max-width:768px){
-  .page{padding:22px 14px}
-  .page-head{grid-template-columns:1fr;gap:10px;text-align:center}
-  .h1{font-size:28px}
-  .toolbar{justify-content:center}
-  .toolbar input[type="search"],.toolbar select{min-width:180px}
-  .btn-primary{width:100%;justify-content:center}
-}
-/* Switch to card view under 640px */
-@media (max-width:640px){
-  .table-wrap{display:none}
-  .mobile-list{display:block}
-  .toolbar input[type="search"],.toolbar select{min-width:140px;font-size:13px;padding:.5rem .7rem}
-}
-/* Small phones polish */
-@media (max-width:420px){
-  .page{padding:18px 10px}
-  .card{grid-template-columns:56px 1fr}
-  .card .thumb{width:56px;height:56px}
-  .btn-sm{padding:.35rem .6rem;font-size:.72rem}
-}
+/* Breakpoints */
+@media (max-width:640px){.table-wrap{display:none}.mobile-list{display:block}}
 </style>
 
 <div class="page">
   <div class="page-head">
     <h1 class="h1">Products</h1>
-
     <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
       <form method="GET" class="toolbar">
         <input type="search" name="q" placeholder="Search products…" value="{{ request('q') }}">
@@ -134,7 +121,7 @@
     </div>
   @endif
 
-  {{-- Desktop/Tablet table --}}
+  {{-- Desktop/Tablet --}}
   <div class="table-wrap">
     <table class="table">
       <thead>
@@ -156,35 +143,46 @@
           <td>
             <div style="display:flex;gap:8px;align-items:center">
               @php
-                $urls = is_array($product->images)
-                  ? collect($product->images)->take(3)->map(fn($p)=>Storage::disk('public')->url($p))->all()
-                  : [];
+                $thumbs = is_array($product->images)
+                    ? collect($product->images)->take(3)->map(fn($p) => productImgUrls($p))->filter()->all()
+                    : [];
               @endphp
-              @if(count($urls))
-                @foreach($urls as $u)
-                  <img class="thumb" src="{{ $u }}" alt="img" onerror="this.removeAttribute('src');">
+
+              @if(count($thumbs))
+                @foreach($thumbs as $u)
+                  <img class="thumb"
+                       src="{{ $u['primary'] }}"
+                       onerror="if(this.dataset.fbk!=='1'){this.dataset.fbk='1';this.src='{{ $u['fallback'] }}';}else{this.onerror=null;this.src='https://via.placeholder.com/112x112/edf2f7/cbd5e1?text=%20';}"
+                       alt="img">
                 @endforeach
               @else
                 <div class="thumb"></div>
               @endif
             </div>
           </td>
+
           <td style="font-weight:700;color:#0f172a">{{ $product->name }}</td>
+
           <td>
             <span class="price-main">${{ number_format($product->final_price, 2) }}</span>
             @if(!is_null($product->original_price) && $product->original_price > $product->final_price)
               <span class="price-old">${{ number_format($product->original_price, 2) }}</span>
             @endif
           </td>
+
           <td style="font-weight:600;color:#334155">{{ ucfirst($product->pieces) }}</td>
           <td style="font-weight:600;color:#334155">{{ ucfirst($product->collection) }}</td>
+
           <td>
             <span class="badge {{ $product->stock > 0 ? 'stock' : 'out' }}">{{ $product->stock > 0 ? $product->stock : '0' }}</span>
           </td>
+
           <td>
             <span class="badge {{ $product->is_active ? 'active' : 'inactive' }}">{{ $product->is_active ? 'Active' : 'Inactive' }}</span>
           </td>
+
           <td style="color:#64748b;font-size:13px">{{ $product->created_at->format('M d, Y') }}</td>
+
           <td>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <a href="{{ route('admin.products.edit',$product) }}" class="btn-sm btn-edit">✏ Edit</a>
@@ -202,17 +200,18 @@
     </table>
   </div>
 
-  {{-- Mobile card list --}}
+  {{-- Mobile --}}
   <div class="mobile-list">
     @forelse($products as $product)
       @php
-        $u = (is_array($product->images) && count($product->images))
-            ? Storage::disk('public')->url($product->images[0])
-            : null;
+        $imgPair = (is_array($product->images) && count($product->images)) ? productImgUrls($product->images[0]) : null;
       @endphp
       <article class="card">
-        @if($u)
-          <img class="thumb" src="{{ $u }}" alt="img" onerror="this.removeAttribute('src');">
+        @if($imgPair)
+          <img class="thumb"
+               src="{{ $imgPair['primary'] }}"
+               onerror="if(this.dataset.fbk!=='1'){this.dataset.fbk='1';this.src='{{ $imgPair['fallback'] }}';}else{this.onerror=null;this.src='https://via.placeholder.com/112x112/edf2f7/cbd5e1?text=%20';}"
+               alt="img">
         @else
           <div class="thumb"></div>
         @endif

@@ -9,20 +9,23 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $tab = request()->get('tab', 'popular'); // 'popular' | 'new'
+        // only allow 'popular' or 'new'
+        $tab = request()->get('tab', 'popular');
+        $tab = in_array($tab, ['popular', 'new'], true) ? $tab : 'popular';
+
+        // Base query for active products
+        $base = Product::query()
+            ->where('is_active', true)
+            ->latest('id');
 
         // Popular: newest active products
-        $popularProducts = Product::query()
-            ->where('is_active', true)
-            ->latest('id')
+        $popularProducts = (clone $base)
             ->take(12)
             ->get();
 
-        // New Arrivals: created within last 30 days (auto rotates out)
-        $newArrivals = Product::query()
-            ->where('is_active', true)
+        // New Arrivals: created within last 30 days
+        $newArrivals = (clone $base)
             ->where('created_at', '>=', Carbon::now()->subDays(30))
-            ->latest('id')
             ->take(12)
             ->get();
 

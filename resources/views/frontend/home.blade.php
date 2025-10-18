@@ -191,15 +191,10 @@
             box-shadow: 0 8px 24px rgba(17, 24, 39, .05);
             will-change: transform, box-shadow, border-color;
             transition: transform .28s cubic-bezier(.2, .65, .2, 1), box-shadow .28s ease, border-color .28s ease;
-            /* scroll-reveal base */
-            opacity: 0;
-            transform: translateY(28px);
+            /* visible by default; reveal only when JS adds .reveal to <body> */
         }
-
-        .card.show {
-            opacity: 1;
-            transform: translateY(0)
-        }
+        .reveal .card { opacity: 0; transform: translateY(28px); }
+        .reveal .card.show { opacity: 1; transform: translateY(0); }
 
         /* fancy hover: lift + glow + image tilt + sheen */
         .card::after {
@@ -375,10 +370,10 @@
     box-shadow:0 8px 24px rgba(17,24,39,.05);
     will-change:transform, box-shadow, border-color;
     transition:transform .28s cubic-bezier(.2,.65,.2,1), box-shadow .28s ease, border-color .28s ease;
-    /* scroll-reveal base */
-    opacity:0; transform:translateY(28px);
+    /* visible by default; reveal only when JS adds .reveal to <body> */
   }
-  .card.show{opacity:1; transform:translateY(0)}
+  .reveal .card{opacity:0; transform:translateY(28px)}
+  .reveal .card.show{opacity:1; transform:translateY(0)}
 
   /* fancy hover: lift + glow + image tilt + sheen */
   .card::after{
@@ -482,7 +477,9 @@
 </style>
 @endsection
 
-@php use Illuminate\Support\Str; @endphp
+@php
+    use Illuminate\Support\Str;
+@endphp
 
 @section('content')
 
@@ -527,6 +524,79 @@
             $newUrl = request()->fullUrlWithQuery(['tab' => 'new']);
             $activeTab = $tab ?? 'popular'; // from controller
             $items = $activeTab === 'new' ? $newArrivals : $popularProducts;
+
+            /**
+             * Build a robust list of possible image URLs for each product.
+             * We DO NOT check server-side "exists" so it also works on live hosting.
+             * Browser will try candidates in order and fall back automatically via JS.
+             */
+            function product_image_candidates($product) {
+                $raws = [];
+
+                // 1) If model exposes helpers
+                if (method_exists($product, 'firstImageUrl')) {
+                    $raws[] = $product->firstImageUrl();
+                }
+                if (method_exists($product, 'getFirstMediaUrl')) {
+                    // spatie medialibrary common collections
+                    $raws[] = $product->getFirstMediaUrl();              // default
+                    $raws[] = $product->getFirstMediaUrl('products');    // named
+                    $raws[] = $product->getFirstMediaUrl('images');      // named
+                }
+
+                // 2) Common attributes
+                foreach (['image_url','image','thumbnail','thumb','cover','feature_image'] as $key) {
+                    if (!empty($product->{$key})) $raws[] = $product->{$key};
+                }
+
+                // 3) "images" as array or JSON string
+                $imgs = $product->images ?? null;
+                if (is_string($imgs)) {
+                    $decoded = json_decode($imgs, true);
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded) && count($decoded)) {
+                        $raws[] = $decoded[0];
+                    } elseif (Str::contains($imgs, ',')) {
+                        $parts = array_map('trim', explode(',', $imgs));
+                        if (!empty($parts[0])) $raws[] = $parts[0];
+                    } else {
+                        $raws[] = $imgs;
+                    }
+                } elseif (is_array($imgs) && count($imgs)) {
+                    $raws[] = $imgs[0];
+                }
+
+                // 4) Normalize each raw to absolute browser-loadable URLs.
+                $urls = [];
+                foreach ($raws as $raw) {
+                    if (!$raw) continue;
+
+                    if (Str::startsWith($raw, ['http://','https://','//'])) {
+                        $urls[] = $raw;
+                        continue;
+                    }
+
+                    // clean relative
+                    $rel = ltrim($raw, '/');
+
+                    // if someone already saved 'storage/products/...'
+                    if (Str::startsWith($rel, 'storage/')) {
+                        $urls[] = asset($rel);
+                    } else {
+                        // Prefer storage symlink location then direct public path
+                        $rel = Str::startsWith($rel, 'products/') ? $rel : ('products/' . $rel);
+                        $urls[] = asset('storage/' . $rel); // /storage/products/...
+                        $urls[] = asset($rel);              // /products/...
+                    }
+                }
+
+                // 5) Unique & filtered
+                $urls = array_values(array_unique(array_filter($urls)));
+
+                // 6) Always keep a placeholder as last resort
+                $urls[] = 'https://via.placeholder.com/900x650/ffffff/aaaaaa?text=No+Image';
+
+                return $urls;
+            }
         @endphp
         <nav class="wn-tabs">
             <a class="wn-tab {{ $activeTab === 'popular' ? 'is-active' : '' }}" href="{{ $popularUrl }}">Popular</a>
@@ -536,23 +606,27 @@
         {{-- product grid (switches by tab) --}}
         <div class="grid">
             @forelse($items as $p)
+                @php
+                    $cands = product_image_candidates($p);
+                    $src0 = $cands[0] ?? 'https://via.placeholder.com/900x650/ffffff/aaaaaa?text=No+Image';
+                    $bg0  = $src0;
+                    $srcListAttr = e(implode('|', $cands));
+                @endphp
+
                 <article class="card" style="--d: {{ $loop->index * 70 }}ms">
                     {{-- CLICKABLE OVERLAY LINK TO PRODUCT VIEW --}}
                     <a href="{{ route('product.show', $p) }}" class="card-link" aria-label="{{ $p->name }}">View</a>
 
-                    @php $img = $p->firstImageUrl(); @endphp
-                    @if ($img)
-<div class="media" style="--bg-img: url('{{ $img }}')">
+                    <div class="media" style="--bg-img: url('{{ $bg0 }}')">
+                        <img
+                            src="{{ $src0 }}"
+                            alt="{{ $p->name }}"
+                            data-srcs="{{ $srcListAttr }}"
+                            data-idx="0"
+                            onerror="window.__imgfb && window.__imgfb(this);"
+                        >
+                    </div>
 
-                            <img src="{{ $img }}" alt="{{ $p->name }}">
-                        </div>
-                    @else
-                        <div class="media" style="--bg-img: url('https://via.placeholder.com/400x300/000000/666?text=No+Image')">
-
-                            <img src="https://via.placeholder.com/400x300/ffffff/aaaaaa?text=No+Image" alt="no image">
-
-                        </div>
-                    @endif
                     <div class="body">
                         <div class="title">{{ $p->name }}</div>
                         <div class="price">
@@ -562,7 +636,7 @@
                             @endif
                         </div>
                         @if (!is_null($p->pieces))
-                            <div class="meta">{{ (int) $p->pieces }} {{ Str::plural('Piece', (int) $p->pieces) }}</div>
+                            <div class="meta">{{ (int) $p->pieces }} {{ \Illuminate\Support\Str::plural('Piece', (int) $p->pieces) }}</div>
                         @endif
                     </div>
                 </article>
@@ -614,10 +688,18 @@
 
 @section('scripts')
     <script>
+        // Ensure reveal class is present so CSS animation only applies when JS runs.
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('reveal');
+        });
+    </script>
+
+    <script>
         // Scroll reveal: fade + lift with stagger (uses inline --d)
         (function() {
             const cards = document.querySelectorAll('.card');
             if (!('IntersectionObserver' in window)) {
+                // If no IO support, just show all
                 cards.forEach(c => c.classList.add('show'));
                 return;
             }
@@ -625,7 +707,6 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const el = entry.target;
-                        // optional stagger from inline style var(--d)
                         const delay = parseInt(getComputedStyle(el).getPropertyValue('--d')) || 0;
                         setTimeout(() => el.classList.add('show'), delay);
                         io.unobserve(el);
@@ -640,10 +721,35 @@
     </script>
 
     <script>
-  // Mirror each <img> src into its parent as a CSS var used above
+  // Fallback loader for product images: tries each candidate URL until one works.
+  window.__imgfb = function(img){
+    try{
+      const list = (img.dataset.srcs || '').split('|').filter(Boolean);
+      let i = parseInt(img.dataset.idx || '0', 10);
+      if (i + 1 < list.length){
+        i = i + 1;
+        img.dataset.idx = String(i);
+        const next = list[i];
+        img.src = next;
+        img.closest('.media')?.style.setProperty('--bg-img', `url("${next}")`);
+      }else{
+        img.onerror = null;
+        const phFg = 'https://via.placeholder.com/900x650/ffffff/aaaaaa?text=No+Image';
+        const phBg = 'https://via.placeholder.com/900x650/000000/666?text=No+Image';
+        img.src = phFg;
+        img.closest('.media')?.style.setProperty('--bg-img', `url("${phBg}")`);
+      }
+    }catch(e){
+      img.onerror = null;
+    }
+  };
+
+  // Mirror each <img> src into its parent as a CSS var used above (also after fallback)
   document.querySelectorAll('.card .media').forEach(m => {
     const img = m.querySelector('img');
-    if (img && img.src) m.style.setProperty('--bg-img', `url("${img.src}")`);
+    const syncBg = () => { if (img && img.src) m.style.setProperty('--bg-img', `url("${img.src}")`); };
+    syncBg();
+    img?.addEventListener('load', syncBg, { passive: true });
   });
 </script>
 

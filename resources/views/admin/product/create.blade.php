@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+@php use Illuminate\Support\Str; @endphp
 <style>
 :root{
   --bg:#f6f8fb; --card:#ffffff; --ink:#0f172a; --muted:#64748b;
@@ -149,19 +150,39 @@ body{background:var(--bg)}
           @if(count($existingImages))
             <div>
               <label class="fx-label">Current Images</label>
+
               <div class="fx-previews">
                 @foreach($existingImages as $img)
-                  <div class="fx-prev">
-                    <img src="{{ Storage::disk('public')->url($img) }}" alt="image">
-                    <div style="display:flex;align-items:center;gap:8px;padding:8px 10px">
-                      <input class="fx-exist" type="checkbox" name="remove_images[]" id="rm_{{ md5($img) }}" value="{{ $img }}">
-                      <label for="rm_{{ md5($img) }}" style="font-weight:700;color:#0f172a;font-size:13px">Remove</label>
-                    </div>
+                  @php
+                      // DB stores 'products/filename.ext' (or just filename) — normalize to public path
+                      $path = Str::startsWith($img, 'products/') ? $img : 'products/' . ltrim($img, '/');
+                  @endphp
+
+                  <div class="fx-prev" style="border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;margin-bottom:12px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.05)">
+                      <img src="{{ asset($path) }}" alt="image" style="width:100%;height:auto;display:block;border-bottom:1px solid #e5e7eb;object-fit:cover">
+
+                      <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#f9fafb">
+                          <input
+                              class="fx-exist"
+                              type="checkbox"
+                              name="remove_images[]"
+                              id="rm_{{ md5($img) }}"
+                              value="{{ $path }}"  {{-- store relative public path e.g. products/abc.jpg --}}
+                              style="width:16px;height:16px;cursor:pointer"
+                          >
+                          <label
+                              for="rm_{{ md5($img) }}"
+                              style="font-weight:600;color:#0f172a;font-size:13px;cursor:pointer"
+                          >
+                              Remove
+                          </label>
+                      </div>
                   </div>
                 @endforeach
               </div>
+
               <p class="fx-note">Total kept images after save will be up to 3 (existing + new).</p>
-            
+            </div>
           @endif
         </div>
       </div>
@@ -225,7 +246,6 @@ body{background:var(--bg)}
       rm.className = 'fx-remove';
       rm.textContent = 'Remove';
       rm.addEventListener('click', () => {
-        // Remove by index and refresh everything
         selectedNewFiles.splice(idx, 1);
         syncInputFiles();
         renderPreviews();
@@ -248,7 +268,6 @@ body{background:var(--bg)}
   // If user toggles remove on existing images, recalc remaining and enforce MAX
   existingBoxes().forEach(cb =>
     cb.addEventListener('change', () => {
-      // If we now exceed MAX (because we re-kept an existing), trim selectedNewFiles
       while (keptExisting() + selectedNewFiles.length > MAX) {
         selectedNewFiles.pop();
       }
