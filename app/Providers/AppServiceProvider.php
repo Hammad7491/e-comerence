@@ -3,7 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Gate;   // 👈 add this
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,9 +21,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // 👇 Define an "admin" Gate used by your routes middleware: can:admin
+        // Force HTTPS URLs in production so browsers don’t block mixed-content images
+        if ($this->app->environment('production')) {
+            // If you’re behind a proxy/CDN (Cloudflare/ELB), this still works as long as
+            // TRUSTED_PROXIES is configured. Otherwise, also set APP_URL=https://your-domain
+            URL::forceScheme('https');
+            // Optionally: URL::forceRootUrl(config('app.url')); // if needed behind proxies
+        }
+
+        // Gate for admin-only routes
         Gate::define('admin', function ($user) {
-            // Adjust to your schema. From your AuthController you’re using a `role` column.
             return ($user->role ?? null) === 'admin';
         });
     }

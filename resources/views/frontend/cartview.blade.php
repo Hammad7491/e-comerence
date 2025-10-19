@@ -2,31 +2,27 @@
 @section('title','Your Cart')
 
 @section('styles')
-<!-- Load Manrope to match previous pages -->
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#0f0f10;
     --muted:#6b7280;
-    --maroon:#6B1030;        /* heading/buttons */
+    --maroon:#6B1030;
     --maroon-dark:#5a0d24;
     --line:#ececec;
     --card:#ffffff;
     --sand:#e9d2b7;
   }
 
-  /* Global typography */
   html, body{
     font-family:"Manrope", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans";
     color:var(--ink);
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
-    text-rendering:optimizeLegibility;
   }
 
   .fx{max-width:1100px;margin:0 auto;padding:0 18px}
 
-  /* ===== HERO ===== */
   .cart-hero{
     background:#2a2a2c;color:#fff;min-height:200px;
     display:flex;align-items:center;justify-content:center;
@@ -40,7 +36,6 @@
     font:900 clamp(100px,16vw,200px)/.9 "Manrope";color:#ffffff12;letter-spacing:.08em;pointer-events:none
   }
 
-  /* ===== WRAP ===== */
   .cart-wrap{max-width:960px;margin:30px auto;background:var(--sand);border-radius:6px}
   .cart-inner{padding:22px}
   @media (max-width: 640px){ .cart-inner{padding:16px} }
@@ -51,7 +46,6 @@
     font:600 13px "Manrope";
   }
 
-  /* ===== TABLE ===== */
   .cart-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:8px;overflow:hidden}
   .cart-table th, .cart-table td{padding:14px;vertical-align:middle}
   .cart-table thead th{
@@ -61,14 +55,20 @@
   .cart-table tbody td{
     border-bottom:1px solid #f3f4f6;font:600 14px/1.5 "Manrope";color:#111827
   }
-  .cart-item{display:flex;align-items:center;gap:12px}
-  .cart-thumb{width:52px;height:52px;border-radius:6px;object-fit:cover;background:#000}
-  .cart-muted{color:var(--muted);font-weight:600;font-size:13px}
 
-  /* hide responsive labels by default (desktop/tablet) */
+  .cart-item{display:flex;align-items:center;gap:12px}
+
+  .thumb{
+    width:52px;height:52px;border-radius:6px;overflow:hidden;
+    background:#f3f4f6;flex:0 0 52px;
+  }
+  .thumb img{
+    width:100%;height:100%;object-fit:cover;display:block;
+  }
+
+  .cart-muted{color:var(--muted);font-weight:600;font-size:13px}
   .cell-label{display:none}
 
-  /* ===== FOOTER TOTAL ===== */
   .cart-total{
     display:flex;align-items:center;justify-content:flex-end;gap:22px;padding:14px 0 0;
   }
@@ -77,7 +77,6 @@
   }
   .cart-total .amount{font:900 18px "Manrope";color:#111827}
 
-  /* ===== CTA ROW ===== */
   .cta-row{
     display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;flex-wrap:wrap
   }
@@ -91,20 +90,17 @@
   .btn-ghost{background:#ffffff;color:#111827;border:1px solid #e7e7e7}
   .btn-ghost:hover{background:#f7f7f7}
 
-  /* Remove button (subtle outline) */
   .btn-outline{
     background:#fff;border:1px solid #e6d8cf;color:#5a2a2a;padding:10px 14px;border-radius:6px;
     font:800 11px/1 "Manrope";letter-spacing:.1em;text-transform:uppercase;
   }
   .btn-outline:hover{background:#f8f3ef}
 
-  /* ===== EMPTY STATE ===== */
   .empty{
     background:#fff;border:1px dashed #e5e7eb;border-radius:8px;padding:28px;text-align:center;color:var(--muted);
     font:600 14px "Manrope";
   }
 
-  /* ===== MOBILE (cards) ===== */
   @media (max-width: 760px){
     .cart-table thead{display:none}
     .cart-table, .cart-table tbody, .cart-table tr, .cart-table td{display:block;width:100%}
@@ -114,7 +110,7 @@
     .cart-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
     .cart-row .meta{grid-column:1/-1;margin-top:-6px}
     .cell-label{
-      display:block;           /* show only on mobile */
+      display:block;
       font:800 11px "Manrope";letter-spacing:.1em;color:#6b7280;
       text-transform:uppercase;margin-bottom:4px
     }
@@ -127,7 +123,6 @@
 @endphp
 
 @section('content')
-  <!-- HERO -->
   <header class="cart-hero">
     <div class="eyebrow">YOUR CART</div>
     <div class="ghost">GULEY THREADS</div>
@@ -159,7 +154,10 @@
             <tr>
               <td>
                 <div class="cart-item cart-row">
-                  <img class="cart-thumb" src="{{ $row['image'] ?? 'https://via.placeholder.com/80x80/000/666?text=No+Image' }}" alt="">
+                  <div class="thumb">
+                    <img src="{{ $row['image'] ?? asset('images/placeholder.jpg') }}" 
+                         alt="{{ $row['name'] ?? 'Product' }}">
+                  </div>
                   <div>
                     <div>{{ $row['name'] }}</div>
                   </div>
@@ -179,7 +177,8 @@
               </td>
               <td>
                 <span class="cell-label">Action</span>
-                <form method="POST" action="{{ route('cart.remove', $row['product_id']) }}" onsubmit="return confirm('Remove this item?')">
+                <form method="POST" action="{{ route('cart.remove', $row['product_id']) }}" 
+                      onsubmit="return confirm('Remove this item?')">
                   @csrf
                   @method('DELETE')
                   <button type="submit" class="btn-outline">Remove</button>

@@ -2,31 +2,27 @@
 @section('title','Checkout')
 
 @section('styles')
-<!-- Use Manrope everywhere (same as previous pages) -->
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#0f0f10;
     --muted:#6b7280;
-    --maroon:#6B1030;          /* headings & buttons */
+    --maroon:#6B1030;
     --maroon-dark:#5a0d24;
-    --sand:#e9d2b7;            /* card bg like product view */
+    --sand:#e9d2b7;
     --card:#ffffff;
     --line:#ececec;
   }
 
-  /* Global typography */
   html, body{
     font-family:"Manrope", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans";
     color:var(--ink);
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
-    text-rendering:optimizeLegibility;
   }
 
   .fx{max-width:1100px;margin:0 auto;padding:0 18px}
 
-  /* ===== HERO (same as other pages) ===== */
   .pv-hero{
     background:#2a2a2c;color:#fff;min-height:200px;
     display:flex;align-items:center;justify-content:center;
@@ -39,13 +35,11 @@
     font:900 clamp(100px,16vw,200px)/.9 "Manrope";color:#ffffff12;letter-spacing:.08em;pointer-events:none
   }
 
-  /* ===== WRAP ===== */
   .wrap{max-width:960px;margin:30px auto;background:var(--sand);border-radius:8px}
   .inner{padding:22px;display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
   @media (max-width: 980px){ .inner{grid-template-columns:1fr} }
   @media (max-width: 640px){ .inner{padding:16px} }
 
-  /* ===== LEFT: FORM ===== */
   .card{background:var(--card);border-radius:8px;overflow:hidden}
   .body{padding:18px}
   .section-title{font:900 42px/0.95 "Manrope";letter-spacing:.04em;color:var(--maroon);margin:6px 0 16px}
@@ -58,7 +52,6 @@
   }
   .textarea{min-height:88px;resize:vertical}
 
-  /* ===== Radios row (FIXED) ===== */
   .radio-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:4px}
   .radio{
     display:inline-flex;align-items:center;gap:10px;
@@ -93,13 +86,12 @@
   .btn-maroon{background:var(--maroon);color:#fff}
   .btn-maroon:hover{background:var(--maroon-dark)}
 
-  /* ===== RIGHT: SUMMARY ===== */
   .sum{background:#fff;border-radius:8px;overflow:hidden}
   .sum .head{padding:14px 16px;border-bottom:1px solid #f0ebe4}
   .sum .head h3{margin:0;font:900 42px/1 "Manrope";letter-spacing:.04em;color:var(--maroon);white-space:nowrap}
   .sum .content{padding:14px 16px}
   .item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;margin-bottom:10px}
-  .thumb{width:42px;height:42px;border-radius:6px;object-fit:cover;background:#000}
+  .thumb{width:42px;height:42px;border-radius:6px;object-fit:cover;background:#f3f4f6}
   .name{font:700 13px "Manrope";color:#111827}
   .sub{color:#6b7280;font:600 12px/1.3 "Manrope"}
   .price{font:800 12px "Manrope";color:#111827;white-space:nowrap}
@@ -115,17 +107,14 @@
 @endphp
 
 @section('content')
-  <!-- HERO -->
   <header class="pv-hero">
     <div class="fx"><div class="pv-eyebrow">CHECKOUT</div></div>
     <div class="pv-ghost">GULEY THREADS</div>
   </header>
 
-  <!-- CONTENT -->
   <section class="wrap">
     <div class="inner">
 
-      <!-- LEFT: FORM -->
       <div class="card">
         <form class="body" action="{{ route('checkout.store') }}" method="POST" enctype="multipart/form-data" id="checkout-form">
           @csrf
@@ -150,7 +139,6 @@
 
           <div class="section-title" style="margin-top:6px">Payment<br>Method</div>
 
-          <!-- FIXED: radios visible and styled -->
           <div class="radio-row" role="radiogroup" aria-label="Payment method">
             <label class="radio">
               <input type="radio" name="payment_method" value="cash"
@@ -167,7 +155,6 @@
 
           <p class="help">Choose how you want to pay.</p>
 
-          <!-- Account details + proof (only for ONLINE) -->
           <div id="acctBox" class="acct {{ old('payment_method')==='online' ? 'show' : '' }}">
             <h5>Send to:</h5>
             <div class="small">
@@ -183,7 +170,6 @@
             </div>
           </div>
 
-          <!-- Total row -->
           <div class="total-row">
             <span class="lbl">Total:</span>
             <span class="amt">PKR {{ number_format($cart['total'],0) }}</span>
@@ -196,13 +182,12 @@
         </form>
       </div>
 
-      <!-- RIGHT: SUMMARY -->
       <aside class="sum">
         <div class="head"><h3>SUMMARY</h3></div>
         <div class="content">
           @forelse($cart['items'] as $row)
             <div class="item">
-              <img class="thumb" src="{{ $row['image'] ?? 'https://via.placeholder.com/80x80/000/666?text=No+Image' }}" alt="">
+              <img class="thumb" src="{{ $row['image'] ?? asset('images/placeholder.jpg') }}" alt="">
               <div>
                 <div class="name">{{ $row['name'] }}</div>
                 <div class="sub">Qty {{ $row['qty'] }}</div>
@@ -243,7 +228,6 @@
   radios.forEach(r => r.addEventListener('change', refreshPaymentUI));
   refreshPaymentUI();
 
-  // prevent double submit
   const form = document.getElementById('checkout-form');
   const btn  = document.getElementById('submitBtn');
   form?.addEventListener('submit', () => { btn.disabled = true; btn.textContent = 'Submitting...'; });
