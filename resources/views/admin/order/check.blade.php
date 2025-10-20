@@ -88,15 +88,9 @@ tr:hover{background:#fafafa}
 <div class="page">
   <div class="head" style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-bottom:16px">
     <h1 class="h1">Order List</h1>
-    <form method="GET" class="toolbar">
-      <input type="search" name="q" placeholder="Search orders…" value="{{ request('q') }}">
-      <select name="status" onchange="this.form.submit()">
-        @php $status = request('status'); @endphp
-        <option value="">Pending (default)</option>
-        <option value="pending"  @selected($status==='pending')>Pending</option>
-        <option value="approved" @selected($status==='approved')>Approved</option>
-        <option value="rejected" @selected($status==='rejected')>Rejected</option>
-      </select>
+    <form method="GET" class="toolbar" id="searchForm">
+      <input id="liveSearch" type="search" name="q" placeholder="Search orders…" value="{{ request('q') }}">
+      
       <button hidden>Filter</button>
     </form>
   </div>
@@ -123,9 +117,9 @@ tr:hover{background:#fafafa}
           <th>Action</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="ordersTbody">
       @forelse($orders as $o)
-        <tr>
+        <tr class="order-row" data-name="{{ Str::lower($o->name) }}">
           <td class="order-contact">
             {{ $o->name }}
             <div class="order-small">{{ optional($o->user)->email }}</div>
@@ -166,14 +160,16 @@ tr:hover{background:#fafafa}
       @empty
         <tr><td colspan="9" style="text-align:center;color:#64748b;padding:24px">No orders found.</td></tr>
       @endforelse
+      {{-- dynamic placeholder when filtering yields zero rows on this page --}}
+      <tr id="noMatchRow" style="display:none;"><td colspan="9" style="text-align:center;color:#64748b;padding:24px">No orders found.</td></tr>
       </tbody>
     </table>
   </div>
 
   {{-- Mobile card view --}}
-  <div class="mobile-list">
+  <div class="mobile-list" id="ordersMobile">
     @forelse($orders as $o)
-      <article class="card">
+      <article class="card order-card" data-name="{{ Str::lower($o->name) }}">
         <h3>{{ $o->name }}</h3>
         <div class="row" style="margin-bottom:8px">
           <span class="badge {{ $o->status }}">{{ ucfirst($o->status) }}</span>
@@ -216,10 +212,60 @@ tr:hover{background:#fafafa}
     @empty
       <div style="text-align:center;color:#64748b;padding:16px">No orders found.</div>
     @endforelse
+
+    {{-- dynamic placeholder for mobile when filtering yields zero cards --}}
+    <div id="noMatchMobile" style="display:none;text-align:center;color:#64748b;padding:16px">No orders found.</div>
   </div>
 
   <div style="margin-top:18px">
     {{ $orders->appends(['q'=>request('q'),'status'=>request('status')])->links() }}
   </div>
 </div>
+
+{{-- Real-time search by customer name (client-side, current page) --}}
+<script>
+  (function(){
+    const input   = document.getElementById('liveSearch');
+    const form    = document.getElementById('searchForm');
+    const rows    = Array.from(document.querySelectorAll('.order-row'));
+    const cards   = Array.from(document.querySelectorAll('.order-card'));
+    const noRow   = document.getElementById('noMatchRow');
+    const noMob   = document.getElementById('noMatchMobile');
+
+    if (!input) return;
+
+    // prevent full page submit if user presses Enter — we do realtime filter
+    form?.addEventListener('submit', function(e){
+      e.preventDefault();
+    });
+
+    const filter = () => {
+      const q = (input.value || '').trim().toLowerCase();
+
+      let shownRows = 0;
+      rows.forEach(tr => {
+        const name = (tr.dataset.name || '').toLowerCase();
+        const match = !q || name.includes(q);
+        tr.style.display = match ? '' : 'none';
+        if (match) shownRows++;
+      });
+      if (noRow) noRow.style.display = (shownRows === 0 && rows.length) ? '' : 'none';
+
+      let shownCards = 0;
+      cards.forEach(card => {
+        const name = (card.dataset.name || '').toLowerCase();
+        const match = !q || name.includes(q);
+        card.style.display = match ? '' : 'none';
+        if (match) shownCards++;
+      });
+      if (noMob) noMob.style.display = (shownCards === 0 && cards.length) ? '' : 'none';
+    };
+
+    // live as you type
+    input.addEventListener('input', filter);
+
+    // run once on load (handles when value comes from ?q=…)
+    filter();
+  })();
+</script>
 @endsection
