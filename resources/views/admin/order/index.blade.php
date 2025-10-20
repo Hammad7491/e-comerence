@@ -79,8 +79,8 @@ tr:hover{background:#fafafa}
 <div class="page">
   <div class="head" style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-bottom:16px">
     <h1 class="h1">Approved Orders</h1>
-    <form method="GET" class="toolbar">
-      <input type="search" name="q" placeholder="Search approved orders…" value="{{ request('q') }}">
+    <form method="GET" class="toolbar" id="approvedSearchForm">
+      <input id="approvedLiveSearch" type="search" name="q" placeholder="Search approved orders…" value="{{ request('q') }}">
       <button hidden>Filter</button>
     </form>
   </div>
@@ -107,9 +107,9 @@ tr:hover{background:#fafafa}
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="approvedTbody">
       @forelse($orders as $o)
-        <tr>
+        <tr class="approved-row" data-name="{{ strtolower($o->name) }}">
           <td class="order-contact">{{ $o->name }}</td>
           <td>{{ $o->phone }}</td>
           <td style="max-width:260px">{{ $o->address }}</td>
@@ -138,14 +138,16 @@ tr:hover{background:#fafafa}
       @empty
         <tr><td colspan="9" style="text-align:center;color:#64748b;padding:24px">No approved orders yet.</td></tr>
       @endforelse
+      {{-- dynamic placeholder when filtering finds zero rows on this page --}}
+      <tr id="approvedNoMatchRow" style="display:none;"><td colspan="9" style="text-align:center;color:#64748b;padding:24px">No approved orders found.</td></tr>
       </tbody>
     </table>
   </div>
 
   {{-- Mobile card list --}}
-  <div class="mobile-list">
+  <div class="mobile-list" id="approvedMobileList">
     @forelse($orders as $o)
-      <article class="card">
+      <article class="card approved-card" data-name="{{ strtolower($o->name) }}">
         <h3>{{ $o->name }}</h3>
         <div class="row" style="margin-bottom:8px">
           <span class="badge">Approved</span>
@@ -178,10 +180,55 @@ tr:hover{background:#fafafa}
     @empty
       <div style="text-align:center;color:#64748b;padding:16px">No approved orders yet.</div>
     @endforelse
+
+    {{-- dynamic placeholder for mobile when filtering finds zero cards --}}
+    <div id="approvedNoMatchMobile" style="display:none;text-align:center;color:#64748b;padding:16px">No approved orders found.</div>
   </div>
 
   <div style="margin-top:18px">
     {{ $orders->appends(['q'=>request('q')])->links() }}
   </div>
 </div>
+
+{{-- Real-time filtering by customer name (client-side, current page only) --}}
+<script>
+(function(){
+  const input   = document.getElementById('approvedLiveSearch');
+  const form    = document.getElementById('approvedSearchForm');
+  const rows    = Array.from(document.querySelectorAll('.approved-row'));
+  const cards   = Array.from(document.querySelectorAll('.approved-card'));
+  const noRow   = document.getElementById('approvedNoMatchRow');
+  const noMob   = document.getElementById('approvedNoMatchMobile');
+
+  if (!input) return;
+
+  // prevent form submit (we filter live)
+  form?.addEventListener('submit', function(e){ e.preventDefault(); });
+
+  const filter = () => {
+    const q = (input.value || '').trim().toLowerCase();
+
+    let shownRows = 0;
+    rows.forEach(tr => {
+      const name = (tr.dataset.name || '').toLowerCase();
+      const match = !q || name.includes(q);
+      tr.style.display = match ? '' : 'none';
+      if (match) shownRows++;
+    });
+    if (noRow) noRow.style.display = (shownRows === 0 && rows.length) ? '' : 'none';
+
+    let shownCards = 0;
+    cards.forEach(card => {
+      const name = (card.dataset.name || '').toLowerCase();
+      const match = !q || name.includes(q);
+      card.style.display = match ? '' : 'none';
+      if (match) shownCards++;
+    });
+    if (noMob) noMob.style.display = (shownCards === 0 && cards.length) ? '' : 'none';
+  };
+
+  input.addEventListener('input', filter);
+  filter(); // run once on load to respect any ?q= value
+})();
+</script>
 @endsection
