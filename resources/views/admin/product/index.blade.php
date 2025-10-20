@@ -99,10 +99,10 @@
   <div class="page-head">
     <h1 class="h1">Products</h1>
     <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
-      <form method="GET" class="toolbar">
-        <input type="search" name="q" placeholder="Search products…" value="{{ request('q') }}">
-        <select name="status" onchange="this.form.submit()">
-          @php $status = request('status'); @endphp
+      <form method="GET" class="toolbar" id="prodFilterForm">
+        <input id="prodLiveSearch" type="search" name="q" placeholder="Search products…" value="{{ request('q') }}"
+        @php $status = request('status'); @endphp>
+        <select id="prodStatusFilter" name="status">
           <option value="">All</option>
           <option value="active"   @selected($status==='active')>Active</option>
           <option value="inactive" @selected($status==='inactive')>Inactive</option>
@@ -137,9 +137,16 @@
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="prodTbody">
       @forelse($products as $product)
-        <tr>
+        @php
+          $statusTag = $product->is_active ? 'active' : 'inactive';
+          $stockTag  = $product->stock > 0 ? 'instock' : 'out';
+        @endphp
+        <tr class="prod-row"
+            data-name="{{ strtolower($product->name) }}"
+            data-status="{{ $statusTag }}"
+            data-stock="{{ $stockTag }}">
           <td>
             <div style="display:flex;gap:8px;align-items:center">
               @php
@@ -196,17 +203,24 @@
       @empty
         <tr><td colspan="9" style="text-align:center;color:#64748b;padding:24px">No products found.</td></tr>
       @endforelse
+      {{-- no-match placeholder for desktop --}}
+      <tr id="prodNoMatchRow" style="display:none;"><td colspan="9" style="text-align:center;color:#64748b;padding:24px">No products match your filters.</td></tr>
       </tbody>
     </table>
   </div>
 
   {{-- Mobile --}}
-  <div class="mobile-list">
+  <div class="mobile-list" id="prodMobile">
     @forelse($products as $product)
       @php
         $imgPair = (is_array($product->images) && count($product->images)) ? productImgUrls($product->images[0]) : null;
+        $statusTag = $product->is_active ? 'active' : 'inactive';
+        $stockTag  = $product->stock > 0 ? 'instock' : 'out';
       @endphp
-      <article class="card">
+      <article class="card prod-card"
+               data-name="{{ strtolower($product->name) }}"
+               data-status="{{ $statusTag }}"
+               data-stock="{{ $stockTag }}">
         @if($imgPair)
           <img class="thumb"
                src="{{ $imgPair['primary'] }}"
@@ -246,10 +260,77 @@
         No products found.
       </div>
     @endforelse
+
+    {{-- no-match placeholder for mobile --}}
+    <div id="prodNoMatchMobile" style="display:none;text-align:center;color:#64748b;padding:16px">No products match your filters.</div>
   </div>
 
   <div style="margin-top:18px">
     {{ $products->appends(['q'=>request('q'),'status'=>request('status')])->links() }}
   </div>
 </div>
+
+{{-- Real-time filter (name + dropdown) for current page --}}
+<script>
+(function(){
+  const searchInput = document.getElementById('prodLiveSearch');
+  const statusSel   = document.getElementById('prodStatusFilter');
+
+  const rows   = Array.from(document.querySelectorAll('.prod-row'));
+  const cards  = Array.from(document.querySelectorAll('.prod-card'));
+
+  const noRow  = document.getElementById('prodNoMatchRow');
+  const noCard = document.getElementById('prodNoMatchMobile');
+
+  const norm = s => (s || '').toLowerCase().trim();
+
+  function matchStatus(node, wanted){
+    if (!wanted) return true;
+    if (wanted === 'active' || wanted === 'inactive'){
+      return (node.dataset.status || '') === wanted;
+    }
+    if (wanted === 'instock' || wanted === 'out'){
+      return (node.dataset.stock || '') === wanted;
+    }
+    return true;
+  }
+
+  function applyFilter(){
+    const q = norm(searchInput?.value || '');
+    const wanted = statusSel?.value || '';
+
+    let shownRows = 0;
+    rows.forEach(tr => {
+      const nameOk = !q || (tr.dataset.name || '').includes(q);
+      const statusOk = matchStatus(tr, wanted);
+      const show = nameOk && statusOk;
+      tr.style.display = show ? '' : 'none';
+      if (show) shownRows++;
+    });
+    if (noRow) noRow.style.display = (shownRows === 0 && rows.length) ? '' : 'none';
+
+    let shownCards = 0;
+    cards.forEach(card => {
+      const nameOk = !q || (card.dataset.name || '').includes(q);
+      const statusOk = matchStatus(card, wanted);
+      const show = nameOk && statusOk;
+      card.style.display = show ? '' : 'none';
+      if (show) shownCards++;
+    });
+    if (noCard) noCard.style.display = (shownCards === 0 && cards.length) ? '' : 'none';
+  }
+
+  searchInput?.addEventListener('input', applyFilter);
+  statusSel?.addEventListener('change', applyFilter);
+
+  // Run once on load, honoring any server-provided ?q= and ?status=
+  applyFilter();
+
+  // Optional: prevent accidental submit on Enter in search
+  document.getElementById('prodFilterForm')?.addEventListener('submit', function(e){
+    e.preventDefault();
+    applyFilter();
+  });
+})();
+</script>
 @endsection
