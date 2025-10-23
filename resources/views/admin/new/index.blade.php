@@ -38,7 +38,7 @@ body{background:var(--bg)}
     <table class="fx-table">
       <thead>
         <tr>
-          <th style="width:80px">ID</th>
+          
           <th style="width:110px">Image</th>
           <th>Title</th>
           <th style="width:200px">Action</th>
@@ -47,7 +47,7 @@ body{background:var(--bg)}
       <tbody>
       @forelse($items as $item)
         <tr>
-          <td>#{{ $item->id }}</td>
+          
           <td>
             @if($item->image)
               <img src="{{ asset('storage/'.$item->image) }}" alt="" width="84" height="64" style="object-fit:cover;border-radius:10px;border:1px solid var(--border)">
