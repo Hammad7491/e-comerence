@@ -34,10 +34,17 @@ body{background:var(--bg)}
 .fx-switch input:checked::after{transform:translateX(18px)}
 .fx-switch label{font-weight:700;color:var(--ink);font-size:14px}
 
-/* file input */
+/* file input (UPDATED to match What's New page) */
 .fx-file{position:relative}
-.fx-file input[type=file]{width:100%;opacity:0;height:46px;position:absolute;inset:0;cursor:pointer}
-.fx-file .fx-file-ui{height:46px;border:1px dashed var(--border);border-radius:12px;background:#fafbff;display:flex;align-items:center;gap:10px;padding:0 12px;color:var(--muted);font-weight:700}
+.fx-file-input{
+  position:absolute; inset:0; width:100%; height:46px;
+  opacity:0; cursor:pointer; z-index:3; /* sits above the visible UI */
+}
+.fx-file .fx-file-ui{
+  position:relative; z-index:2;
+  height:46px;border:1px dashed var(--border);border-radius:12px;background:#fafbff;
+  display:flex;align-items:center;gap:10px;padding:0 12px;color:var(--muted);font-weight:700
+}
 .fx-file .fx-chip{padding:6px 12px;border-radius:10px;background:var(--primary);color:#fff;font-weight:800;font-size:12px}
 .fx-counter{font-size:12px;font-weight:800;color:#334155;margin-left:6px}
 
@@ -138,10 +145,13 @@ body{background:var(--bg)}
 
           <div class="fx-file">
             <label class="fx-label">Upload Images <small>(max 3)</small> <span id="fxCount" class="fx-counter"></span></label>
-            <div class="fx-file-ui">
+
+            <!-- UPDATED: make the visible row a label and overlay the transparent input -->
+            <label for="imagesInput" class="fx-file-ui">
               <span class="fx-chip">Choose files</span><span>JPG/PNG/WEBP up to 4MB each</span>
-            </div>
-            <input id="imagesInput" type="file" name="images[]" multiple accept="image/*">
+            </label>
+            <input id="imagesInput" class="fx-file-input" type="file" name="images[]" multiple accept="image/*">
+
             <div id="previewContainer" class="fx-previews"></div>
             <div id="fxMsg" class="fx-note"></div>
           </div>

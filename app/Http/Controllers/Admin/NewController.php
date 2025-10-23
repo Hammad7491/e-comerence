@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\WhatNew;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\File;
 
 class NewController extends Controller
 {
@@ -17,7 +18,7 @@ class NewController extends Controller
 
     public function create()
     {
-        // create view (same Blade as edit, but without $item)
+        // same Blade is used for edit when $item is passed
         return view('admin.new.create');
     }
 
@@ -25,13 +26,18 @@ class NewController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            // match UI text: 4MB
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096', // 4MB
         ]);
 
         $path = null;
+
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('whatnew', 'public');
+            $file = $request->file('image');
+            if ($file instanceof UploadedFile && $file->isValid()) {
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('products'), $filename);      // <-- same as products
+                $path = 'products/' . $filename;                      // save relative public path
+            }
         }
 
         WhatNew::create([
@@ -62,16 +68,24 @@ class NewController extends Controller
 
         $data = ['title' => $request->title];
 
-        // If user clicked "Remove" on existing image OR a new image is uploaded, delete old file first
+        // remove existing file if requested OR if a new one will replace it
         $shouldRemoveExisting = $request->boolean('remove_image') || $request->hasFile('image');
-        if ($shouldRemoveExisting && $item->image && Storage::disk('public')->exists($item->image)) {
-            Storage::disk('public')->delete($item->image);
+        if ($shouldRemoveExisting && $item->image) {
+            $full = public_path($item->image);
+            if (File::exists($full)) {
+                File::delete($full);
+            }
             $item->image = null;
         }
 
-        // Save new image if provided
+        // upload new image (same path pattern as products)
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('whatnew', 'public');
+            $file = $request->file('image');
+            if ($file instanceof UploadedFile && $file->isValid()) {
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('products'), $filename);
+                $data['image'] = 'products/' . $filename;
+            }
         }
 
         $item->update($data);
@@ -83,8 +97,11 @@ class NewController extends Controller
     {
         $item = WhatNew::findOrFail($id);
 
-        if ($item->image && Storage::disk('public')->exists($item->image)) {
-            Storage::disk('public')->delete($item->image);
+        if ($item->image) {
+            $full = public_path($item->image);
+            if (File::exists($full)) {
+                File::delete($full);
+            }
         }
 
         $item->delete();

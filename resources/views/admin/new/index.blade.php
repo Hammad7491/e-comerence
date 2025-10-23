@@ -50,7 +50,8 @@ body{background:var(--bg)}
           
           <td>
             @if($item->image)
-              <img src="{{ asset('storage/'.$item->image) }}" alt="" width="84" height="64" style="object-fit:cover;border-radius:10px;border:1px solid var(--border)">
+              <img src="{{ asset($item->image) }}" width="80" height="80" style="object-fit:cover;border-radius:8px;">
+
             @else
               <span class="text-muted">No Image</span>
             @endif

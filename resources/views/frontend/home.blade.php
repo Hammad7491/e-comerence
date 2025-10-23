@@ -529,7 +529,8 @@
                 @foreach($whatNews as $item)
                     <div class="wn-chip">
                         <span class="wn-circle" aria-hidden="true">
-                            <img src="{{ $item->image ? asset('storage/'.$item->image) : asset('assets/images/placeholder.jpg') }}" alt="{{ $item->title }}">
+                            <img src="{{ asset($item->image) }}" alt="{{ $item->title }}">
+
                         </span>
                         <span class="wn-label">{{ strtoupper($item->title) }}</span>
                     </div>

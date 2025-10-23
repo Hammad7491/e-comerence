@@ -87,7 +87,8 @@ body{background:var(--bg)}
         <div id="previewContainer" class="fx-previews">
           @if(isset($item) && $item->image)
             <div class="fx-prev" id="existingPrev">
-              <img src="{{ asset('storage/'.$item->image) }}" alt="Current image">
+            <img src="{{ asset($item->image) }}" alt="Current image">
+
               <button type="button" class="fx-remove" id="removeExistingBtn">Remove</button>
             </div>
             <input type="hidden" name="remove_image" id="removeExisting" value="0">
