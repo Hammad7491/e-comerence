@@ -515,37 +515,25 @@
 
     <div class="fade-hr"></div>
 
-    {{-- ========== WHAT’S NEW (exact) ========== --}}
+    {{-- ========== WHAT’S NEW (dynamic) ========== --}}
     @php
-        // THREE different circle images — use plain <img> with asset(), same as header logo
-        $circleImg1 = asset('assets/images/unstiched.png');  // make sure file name/case matches on server
-        $circleImg2 = asset('assets/images/ready.png');
-        $circleImg3 = asset('assets/images/piece.png');
+        /** Pull dynamic items (title + image) */
+        $whatNews = \App\Models\WhatNew::query()->latest()->get();
     @endphp
     <section class="fx-container wn">
         <div class="wn-head">
             <h2 class="wn-title">WHAT’S<br>NEW</h2>
 
-            {{-- maroon circles with gold ring, each has its own <img> like header --}}
+            {{-- maroon circles with gold ring, each driven from DB --}}
             <div class="wn-circles">
-                <div class="wn-chip">
-                    <span class="wn-circle" aria-hidden="true">
-                        <img src="{{ $circleImg1 }}" alt="Hand Embroidery Unstitched">
-                    </span>
-                    <span class="wn-label">HAND EMBROIDERY<br>UNSTITCHED</span>
-                </div>
-                <div class="wn-chip">
-                    <span class="wn-circle" aria-hidden="true">
-                        <img src="{{ $circleImg2 }}" alt="Ready To Wear">
-                    </span>
-                    <span class="wn-label">READY TO<br>WEAR</span>
-                </div>
-                <div class="wn-chip">
-                    <span class="wn-circle" aria-hidden="true">
-                        <img src="{{ $circleImg3 }}" alt="Embroidered 2 Piece Suits">
-                    </span>
-                    <span class="wn-label">EMBROIDED<br>2 PIECE SUITS</span>
-                </div>
+                @foreach($whatNews as $item)
+                    <div class="wn-chip">
+                        <span class="wn-circle" aria-hidden="true">
+                            <img src="{{ $item->image ? asset('storage/'.$item->image) : asset('assets/images/placeholder.jpg') }}" alt="{{ $item->title }}">
+                        </span>
+                        <span class="wn-label">{{ strtoupper($item->title) }}</span>
+                    </div>
+                @endforeach
             </div>
         </div>
 

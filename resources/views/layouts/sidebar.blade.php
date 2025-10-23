@@ -57,6 +57,28 @@
         </ul>
       </li>
 
+      <!-- ================= NEW SECTION: WHAT'S NEW ================= -->
+      <li class="sidebar-menu-group-title">What’s New</li>
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <iconify-icon icon="solar:widget-4-outline" class="menu-icon"></iconify-icon>
+          <span>What’s New</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="{{ route('admin.new.create') }}">
+              <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Add Item
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('admin.new.index') }}">
+              <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Items List
+            </a>
+          </li>
+        </ul>
+      </li>
+      <!-- =========================================================== -->
+
       <li class="sidebar-menu-group-title">Orders</li>
       <li class="dropdown">
         <a href="javascript:void(0)">
