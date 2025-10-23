@@ -164,11 +164,18 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');});
 
 
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
 
+    // WHAT'S NEW SECTION
+    Route::prefix('new')->name('new.')->group(function () {
+        Route::get('/',            [NewController::class, 'index'])->name('index');
+        Route::get('/create',      [NewController::class, 'create'])->name('create');
+        Route::post('/',           [NewController::class, 'store'])->name('store');
 
-    Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
-    Route::get('new', [NewController::class, 'index'])->name('new.index');
-    Route::get('new/create', [NewController::class, 'create'])->name('new.create');
-    Route::post('new/store', [NewController::class, 'store'])->name('new.store');
-    Route::delete('new/{id}', [NewController::class, 'destroy'])->name('new.destroy');
+        Route::get('/{id}/edit',   [NewController::class, 'edit'])->name('edit');
+        Route::put('/{id}',        [NewController::class, 'update'])->name('update');
+
+        Route::delete('/{id}',     [NewController::class, 'destroy'])->name('destroy');
+    });
+
 });
