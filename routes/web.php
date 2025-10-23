@@ -3,18 +3,20 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\ProductViewController;
+use App\Http\Controllers\Admin\NewController;
 
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\OrderController;
-
 use App\Http\Controllers\Auth\SocialController;
+use App\Http\Controllers\ProductViewController;
+
+use App\Http\Controllers\OrderHistoryController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -160,3 +162,13 @@ Route::get('/contact-us', function () {
 
 Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');});
+
+
+
+
+    Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    Route::get('new', [NewController::class, 'index'])->name('new.index');
+    Route::get('new/create', [NewController::class, 'create'])->name('new.create');
+    Route::post('new/store', [NewController::class, 'store'])->name('new.store');
+    Route::delete('new/{id}', [NewController::class, 'destroy'])->name('new.destroy');
+});
