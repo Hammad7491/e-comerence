@@ -131,7 +131,7 @@ tr:hover{background:#fafafa}
           <td>
             @if($o->payment_proof)
               <div style="display:flex;gap:10px;flex-wrap:wrap">
-                <a class="proof-link" href="{{ Storage::disk('public')->url($o->payment_proof) }}" target="_blank" rel="noopener">View</a>
+                
                 <a class="proof-link" href="{{ route('admin.orders.download-proof', $o) }}">Download</a>
               </div>
             @else
