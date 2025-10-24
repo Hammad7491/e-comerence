@@ -128,6 +128,15 @@ html, body{
 }
 .pv-sec .bar{ width:36px; height:2px; background:#a91b28; margin:6px 0 14px; }
 .pv-spec{ font:600 13px/1.7 "Manrope"; color:#2a2a2c; }
+
+
+.pv-btn{
+  display:block; width:220px; height:40px; border:0; margin:8px 0; cursor:pointer;
+  font:800 12px/40px "Manrope"; text-transform:uppercase; letter-spacing:.08em;
+  background:#6a0f2a; color:#fff; border-radius:4px; transition:background .25s;
+  text-align:center;           /* <-- add this */
+}
+
 </style>
 @endsection
 
