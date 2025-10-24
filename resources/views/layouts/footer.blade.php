@@ -5,10 +5,6 @@
         © 2025 <strong>Guley Threads</strong>. All Rights Reserved.
       </p>
     </div>
-    <div class="col-12 col-md-auto text-center text-md-end">
-      <p class="mb-0" style="color:#475569;font-weight:500;">
-        Crafted by <span style="color:#4f46e5;font-weight:700;">CodeFixxer</span>
-      </p>
-    </div>
+  
   </div>
 </footer>
